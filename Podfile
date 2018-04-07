@@ -8,6 +8,8 @@ target 'Bird' do
   # Pods for Bird
   pod 'Disk'
   pod 'Eureka'
+  pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow'  
+  pod 'UIColor_Hex_Swift'
 
 
 

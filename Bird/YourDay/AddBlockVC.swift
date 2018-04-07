@@ -6,27 +6,35 @@
 //  Copyright © 2018 Arjun Madgavkar. All rights reserved.
 //
 
+import Disk
 import UIKit
 import Eureka
-import Disk
+import ColorPickerRow
 
 class AddBlockVC: FormViewController {
   // Create the delegate here, but set it in YourDayVC
   weak var addBlockDelegate : AddBlockDelegate?
+  var category : String?
   var timeBlocks = [TimeBlock]()
-  var categories = [String]()
+  var categories = [Category]()
+  var namesOfCategories = [String]()
   var activities = [String]()
   let today = Date()
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
     // Get data saved on Disk
     do { timeBlocks = try Disk.retrieve("timeBlocks.json", from: .documents, as: [TimeBlock].self) }
     catch let error { print("\(error)") }
-    do { categories = try Disk.retrieve("categories.json", from: .documents, as: [String].self) }
+    do { categories = try Disk.retrieve("categories.json", from: .documents, as: [Category].self) }
     catch let error { print("\(error)") }
     do { activities = try Disk.retrieve("activities.json", from: .documents, as: [String].self) }
     catch let error { print("\(error)") }
+    
+    for cat in categories {
+      namesOfCategories.append(cat.name)
+    }
     
     // Row properties
     NameRow.defaultCellSetup = { cell, row in
@@ -67,10 +75,10 @@ class AddBlockVC: FormViewController {
     
     form
       // Category + activity
-      +++ Section()
+      +++ Section("Activity & Category")
       <<< SuggestionAccessoryRow<String>() {
         $0.filterFunction = { text in
-          self.categories.filter({ $0.hasPrefix(text) })
+          self.namesOfCategories.filter({ $0.hasPrefix(text) })
         }
         $0.placeholder = "Deep Work"
         $0.title = "Category"
@@ -83,6 +91,14 @@ class AddBlockVC: FormViewController {
         $0.placeholder = "Code 🙏🏽"
         $0.title = "Activity"
         $0.tag = "activity"
+      }
+      <<< InlineColorPickerRow() { (row) in
+        //if ( categories[category!] == nil ) { row.hidden = true }
+        row.title = "Color Picker"
+        row.tag = "color"
+        row.isCircular = false
+        row.showsPaletteNames = true
+        row.value = UIColor.green
       }
       // Start + end time + date
       +++ Section()
@@ -161,10 +177,12 @@ class AddBlockVC: FormViewController {
   }
   
   func addTimeBlock() {
-    // Create variables needed for data store
-    var category, activity, accomplishments, learnings : String?
-    var startTimeHour, startTimeMinute, endTimeHour, endTimeMinute, quality : Int?
+    // Form properties
+    var color : UIColor?
     var flow, unpleasant : Bool?
+    var activity, accomplishments, learnings : String?
+    var startTimeHour, startTimeMinute, endTimeHour, endTimeMinute, quality : Int?
+    // Date properties
     let calendar = Calendar.current
     var startDateComponents = DateComponents()
     var endDateComponents = DateComponents()
@@ -177,6 +195,9 @@ class AddBlockVC: FormViewController {
     }
     if ( formValues["activity"] != nil ) {
       activity = formValues["activity"] as? String
+    }
+    if ( formValues["color"] != nil ) {
+      color = formValues["color"] as? UIColor
     }
     if ( formValues["accomplishments"] != nil ) {
       accomplishments = formValues["accomplishments"] as? String
@@ -231,11 +252,15 @@ class AddBlockVC: FormViewController {
     let startDate = calendar.date(from: startDateComponents)
     let endDate = calendar.date(from: endDateComponents)
     
-    if ( category != nil && activity != nil && quality != nil ) {
+    if ( category != nil && activity != nil && quality != nil && color != nil ) {
       // Get length of time
       let lengthOfTime = endDate?.minutes(from: startDate!)
       
-      let timeBlock = TimeBlock(category : category!, activity : activity!, startDate : startDate!, endDate : endDate!, lengthOfTime : lengthOfTime!, quality : quality!, flow : flow!, unpleasantFeelings : unpleasant!, accomplishments : accomplishments!, learnings : learnings!)
+      // Create new category
+      let newCategory = Category(name: category!, color: (color?.toHex())!)
+      
+      // Create timeBlock
+      let timeBlock = TimeBlock(category : newCategory, activity : activity!, startDate : startDate!, endDate : endDate!, lengthOfTime : lengthOfTime!, quality : quality!, flow : flow!, unpleasantFeelings : unpleasant!, accomplishments : accomplishments!, learnings : learnings!)
      
       // Check to see if the time block already exists
       var counter = 0
@@ -253,7 +278,7 @@ class AddBlockVC: FormViewController {
       
       // Handle category
       var addCategory = true
-      for c in categories {
+      for c in namesOfCategories {
         if ( c == category ) {
           addCategory = false
         }
@@ -268,7 +293,7 @@ class AddBlockVC: FormViewController {
       }
       
       if ( addCategory ) {
-        categories.append(category!)
+        categories.append(newCategory)
         do { try Disk.save(categories, to: .documents, as: "categories.json") }
         catch let error { print("\(error)") }
       }
@@ -289,8 +314,10 @@ class AddBlockVC: FormViewController {
         self.showAlert(withTitle: "Missing Information", message: "Please fill out the category.")
       } else if ( activity == nil ) {
         self.showAlert(withTitle: "Missing Information", message: "Please fill out the activity.")
-      } else {
+      } else if ( quality == nil ) {
         self.showAlert(withTitle: "Missing Information", message: "Please rate the quality of the experience.")
+      } else {
+        self.showAlert(withTitle: "Missing Information", message: "Please pick a color.")
       }
     }
   }

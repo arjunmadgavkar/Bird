@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
   var timeBlocks = [TimeBlock]()
-  var categories = [String]()
+  var categories = [Category]()
   var activities = [String]()
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -31,12 +31,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      catch let error { print("\(error)") }
      
      */
-
     
- 
     do { timeBlocks = try Disk.retrieve("timeBlocks.json", from: .documents, as: [TimeBlock].self) }
     catch let error { print("\(error)") }
-    do { categories = try Disk.retrieve("categories.json", from: .documents, as: [String].self) }
+    do { categories = try Disk.retrieve("categories.json", from: .documents, as: [Category].self) }
     catch let error { print("\(error)") }
     do { activities = try Disk.retrieve("activities.json", from: .documents, as: [String].self) }
     catch let error { print("\(error)") }
@@ -44,9 +42,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var addCategories = false
     if ( categories.count == 0 ) {
-      categories = ["Commute", "Deep Work", "Exercise", "Family", "Learning", "Meditation", "Mindfulness", "Morning Routine", "Relax", "Sleep", "Social", "Waste", "Work"]
+      let namesOfCategories = ["Commute", "Deep Work", "Exercise", "Family", "Learning", "Meditation", "Mindfulness", "Morning Routine", "Relax", "Sleep", "Social", "Waste", "Work"]
+      var i = 0;
+      while (i < 11) {
+        categories.append(Category(name: namesOfCategories[i]))
+        i+=1
+      }
       addCategories = true
     }
+    
     
     var addActivities = false
     if ( activities.count == 0 ) {

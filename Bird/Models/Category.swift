@@ -11,9 +11,17 @@ import Eureka
 import Foundation
 
 struct Category : Codable {
-  let category : String
+  let name : String
+  let color : String
   
-  init(category : String) { self.category = category }
+  init(name : String) {
+    self.name = name
+    self.color = "tempColor"
+  }
+  init(name : String, color : String) {
+    self.name = name
+    self.color = color
+  }
 }
 
 // SuggestionRow Protocol
@@ -22,9 +30,9 @@ extension Category : SuggestionValue {
     return nil
   }
   var suggestionString: String {
-    return "\(self.category)"
+    return "\(self.name)"
   }
   static func ==(lhs: Category, rhs: Category) -> Bool {
-    return lhs.category == rhs.category
+    return lhs.name == rhs.name
   }
 }

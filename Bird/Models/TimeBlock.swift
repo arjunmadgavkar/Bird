@@ -10,9 +10,8 @@ import Eureka
 import Foundation
 
 class TimeBlock : Codable {
-  let category : String
+  let category : Category
   let activity : String
-  //let color : String
   let startDate : Date
   let endDate : Date
   let lengthOfTime : Int
@@ -22,7 +21,7 @@ class TimeBlock : Codable {
   let accomplishments : String
   let learnings : String
   
-  init(category : String, activity : String, startDate : Date, endDate : Date, lengthOfTime : Int, quality : Int, flow : Bool, unpleasantFeelings : Bool, accomplishments : String, learnings : String) {
+  init(category : Category, activity : String, startDate : Date, endDate : Date, lengthOfTime : Int, quality : Int, flow : Bool, unpleasantFeelings : Bool, accomplishments : String, learnings : String) {
     self.category = category
     self.activity = activity
     self.startDate = startDate

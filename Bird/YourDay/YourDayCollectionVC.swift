@@ -93,7 +93,7 @@ extension YourDayCollectionVC {
     
     // Activity label
     let timeBlock = currentDateBlocks[indexPath.row]
-    cell.categoryActivityLabel.text = timeBlock.category + " (" + timeBlock.activity + ")"
+    cell.categoryActivityLabel.text = timeBlock.category.name + " (" + timeBlock.activity + ")"
     
     // Time label
     let userStartDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.startDate)
@@ -103,8 +103,7 @@ extension YourDayCollectionVC {
     cell.timeLabel.text = startTime + "-" + endTime
     
     // Set color
-    
-    cell.backgroundColor = UIColor.white
+    cell.backgroundColor = UIColor(hex: timeBlock.category.color)
     
     return cell
   }
