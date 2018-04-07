@@ -14,15 +14,38 @@ import ColorPickerRow
 class AddBlockVC: FormViewController {
   // Create the delegate here, but set it in YourDayVC
   weak var addBlockDelegate : AddBlockDelegate?
-  var category : String?
+  var category, catColor : String?
+  var shouldPickColor = true
+  var timeChanged = false
   var timeBlocks = [TimeBlock]()
   var categories = [Category]()
   var namesOfCategories = [String]()
+  var categoriesWithColors = [String]()
+  var namesOfColors = [String]()
   var activities = [String]()
   let today = Date()
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    let cal = Calendar.current
+    var dc = DateComponents()
+    var dcChanged = DateComponents()
+    var dcEnd = DateComponents()
+    // Hour
+    let hr = cal.component(.hour, from: today)
+    dc.hour = hr
+    dcChanged.hour = hr
+    dcEnd.hour = hr + 1
+    // Minute
+    var minute = cal.component(.minute, from: today)
+    if ( minute < 15 ) { minute = 0 }
+    else if ( minute >= 15 && minute < 30) { minute = 15 }
+    else if ( minute >= 30 && minute < 45 ) { minute = 30 }
+    else { minute = 45 }
+    dc.minute = minute
+    dcChanged.minute = minute
+    dcEnd.minute = minute
     
     // Get data saved on Disk
     do { timeBlocks = try Disk.retrieve("timeBlocks.json", from: .documents, as: [TimeBlock].self) }
@@ -34,8 +57,13 @@ class AddBlockVC: FormViewController {
     
     for cat in categories {
       namesOfCategories.append(cat.name)
+      namesOfColors.append(cat.color)
+      if ( cat.color != "tempColor") {
+        categoriesWithColors.append(cat.name)
+      }
+      print("Category: \(cat.name) | Color: \(cat.color)")
     }
-    
+  
     // Row properties
     NameRow.defaultCellSetup = { cell, row in
       cell.textLabel?.font = AvenirNext(size: 17.0)
@@ -80,6 +108,9 @@ class AddBlockVC: FormViewController {
         $0.filterFunction = { text in
           self.namesOfCategories.filter({ $0.hasPrefix(text) })
         }
+//        $0.onChange({ row in
+//          self.catColor = row.value
+//        })
         $0.placeholder = "Deep Work"
         $0.title = "Category"
         $0.tag = "category"
@@ -93,7 +124,16 @@ class AddBlockVC: FormViewController {
         $0.tag = "activity"
       }
       <<< InlineColorPickerRow() { (row) in
-        //if ( categories[category!] == nil ) { row.hidden = true }
+        row.hidden = Condition.function(["category"], { form in
+          let suggestionRow = form.rowBy(tag: "category")
+          if let catName = suggestionRow?.baseValue as? String {
+            if ( self.categoriesWithColors.contains(catName) ) {
+              self.shouldPickColor = false
+              return true
+            }
+          }
+          return false
+        })
         row.title = "Color Picker"
         row.tag = "color"
         row.isCircular = false
@@ -105,31 +145,21 @@ class AddBlockVC: FormViewController {
       <<< TimeRow(){ row in
         row.title = "Start Time"
         row.tag = "start_time"
-        let cal = Calendar.current
-        var dc = DateComponents()
-        dc.hour = cal.component(.hour, from: today)
-        var minute = cal.component(.minute, from: today)
-        if ( minute < 15 ) { minute = 0 }
-        else if ( minute >= 15 && minute < 30) { minute = 15 }
-        else if ( minute >= 30 && minute < 45 ) { minute = 30 }
-        else { minute = 45 }
-        dc.minute = minute
         row.value = cal.date(from: dc)
       }
       <<< TimeRow(){ row in
         row.title = "End Time"
         row.tag = "end_time"
-        let cal = Calendar.current
-        var dc = DateComponents()
-        dc.hour = cal.component(.hour, from: today) + 1
-        var minute = cal.component(.minute, from: today)
-        if ( minute < 15 ) { minute = 0 }
-        else if ( minute >= 15 && minute < 30) { minute = 15 }
-        else if ( minute >= 30 && minute < 45 ) { minute = 30 }
-        else { minute = 45 }
-        dc.minute = minute
-        let rowDate = cal.date(from: dc)
-        row.value = rowDate
+        row.value = cal.date(from: dcEnd)                         // Set original date
+        row.hidden = Condition.function(["start_time"], { form in // Set date if other row changes
+          let timeRow = form.rowBy(tag: "start_time")
+          let dateValue = timeRow?.baseValue as? Date
+          var newDateComponents = DateComponents()
+          newDateComponents.hour = cal.component(.hour, from: dateValue!) + 1
+          newDateComponents.minute = cal.component(.minute, from: dateValue!)
+          row.value = cal.date(from: newDateComponents)
+          return false
+        })
       }
       <<< DateRow(){ row in
         row.title = "Date"
@@ -198,6 +228,7 @@ class AddBlockVC: FormViewController {
     }
     if ( formValues["color"] != nil ) {
       color = formValues["color"] as? UIColor
+      shouldPickColor = false
     }
     if ( formValues["accomplishments"] != nil ) {
       accomplishments = formValues["accomplishments"] as? String
@@ -252,12 +283,29 @@ class AddBlockVC: FormViewController {
     let startDate = calendar.date(from: startDateComponents)
     let endDate = calendar.date(from: endDateComponents)
     
-    if ( category != nil && activity != nil && quality != nil && color != nil ) {
+    if ( category != nil && activity != nil && quality != nil && !shouldPickColor ) {
       // Get length of time
       let lengthOfTime = endDate?.minutes(from: startDate!)
       
-      // Create new category
-      let newCategory = Category(name: category!, color: (color?.toHex())!)
+      // Handle category
+      var categoryCounter = 0
+      var addCategory = false
+      for cat in categories {
+        if ( cat.name == category! ) {
+          if ( cat.color == "tempColor") {
+            // Remove
+            categories.remove(at: categoryCounter)
+            addCategory = true
+            // Set new color
+            catColor = (color?.toHex())!
+          } else {
+            catColor = cat.color
+          }
+        }
+        categoryCounter+=1
+      }
+      
+      let newCategory = Category(name: category!, color: catColor!)
       
       // Create timeBlock
       let timeBlock = TimeBlock(category : newCategory, activity : activity!, startDate : startDate!, endDate : endDate!, lengthOfTime : lengthOfTime!, quality : quality!, flow : flow!, unpleasantFeelings : unpleasant!, accomplishments : accomplishments!, learnings : learnings!)
@@ -276,13 +324,6 @@ class AddBlockVC: FormViewController {
       // Add to array and save to Disk
       timeBlocks.append(timeBlock)
       
-      // Handle category
-      var addCategory = true
-      for c in namesOfCategories {
-        if ( c == category ) {
-          addCategory = false
-        }
-      }
       
       // Handle activities
       var addActivity = true
@@ -294,6 +335,9 @@ class AddBlockVC: FormViewController {
       
       if ( addCategory ) {
         categories.append(newCategory)
+        categories.sort(by: { (c1, c2) -> Bool in
+          return c1.name < c2.name
+        })
         do { try Disk.save(categories, to: .documents, as: "categories.json") }
         catch let error { print("\(error)") }
       }

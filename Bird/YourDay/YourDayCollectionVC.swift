@@ -14,7 +14,7 @@ class YourDayCollectionVC: UICollectionViewController, AddBlockDelegate {
   let calendar = Calendar.current
   var timeBlocks = [TimeBlock]()
   var currentDateBlocks = [TimeBlock]()
-  fileprivate let sectionInsets = UIEdgeInsets(top: 50.0, left: 20.0, bottom: 50.0, right: 20.0)
+  fileprivate let sectionInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
   fileprivate let itemsPerRow: CGFloat = 1
 
   override func viewDidLoad() {
@@ -39,9 +39,7 @@ class YourDayCollectionVC: UICollectionViewController, AddBlockDelegate {
     
     // Organize by time
     currentDateBlocks.sort { (t1, t2) -> Bool in
-      if ( t1.startDate < t2.startDate ) {
-        return true
-      }
+      if ( t1.startDate < t2.startDate ) { return true }
       return false
     }
     
@@ -73,8 +71,12 @@ class YourDayCollectionVC: UICollectionViewController, AddBlockDelegate {
     // If they added to today's calendar
     if ( userDate.month == today.month && userDate.day == today.day && userDate.year == today.year ) {
       // Update VC
-      print("Tina: Date added today!")
-      //self.collectionView?.reloadData()
+      currentDateBlocks.append(timeBlock)
+      currentDateBlocks.sort { (t1, t2) -> Bool in
+        if ( t1.startDate < t2.startDate ) { return true }
+        return false
+      }
+      self.collectionView?.reloadData()
     }
   }
 }
@@ -97,9 +99,13 @@ extension YourDayCollectionVC {
     
     // Time label
     let userStartDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.startDate)
-    let startTime = String(describing: userStartDate.hour!) + ":" + String(describing: userStartDate.minute!)
+    var startMinute = String(describing: userStartDate.minute!)
+    if ( startMinute == "0" ) { startMinute = "00" }
+    let startTime = String(describing: userStartDate.hour!) + ":" + startMinute
     let userEndDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.endDate)
-    let endTime = String(describing: userEndDate.hour!) + ":" + String(describing: userEndDate.minute!)
+    var endMinute = String(describing: userStartDate.minute!)
+    if ( endMinute == "0" ) { endMinute = "00" }
+    let endTime = String(describing: userEndDate.hour!) + ":" + endMinute
     cell.timeLabel.text = startTime + "-" + endTime
     
     // Set color

@@ -68,7 +68,7 @@ public class _InlineColorPickerRow: Row<InlineColorPickerCell> {
     open var palettes : [ColorPalette] = [  //iOS().palette,
                                             //Solarised().palette,
                                             //WP8().palette,
-                                            Flat().palette,
+                                            //Flat().palette,
                                             Material().palette
                                             //Metro().palette
                                           ]
