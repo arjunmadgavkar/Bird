@@ -7,16 +7,66 @@
 //
 
 import UIKit
+import Disk
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
-
+  var timeBlocks = [TimeBlock]()
+  var categories = [String]()
+  var activities = [String]()
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-    // Override point for customization after application launch.
+    
+    /*
+    Testing:
+ 
+    Remove everything --
+     do { try Disk.remove("timeBlocks.json", from: .documents) }
+     catch let error { print("\(error)") }
+     do { try Disk.remove("categories.json", from: .documents) }
+     catch let error { print("\(error)") }
+     do { try Disk.remove("activities.json", from: .documents) }
+     catch let error { print("\(error)") }
+     
+     */
+
+    
+ 
+    do { timeBlocks = try Disk.retrieve("timeBlocks.json", from: .documents, as: [TimeBlock].self) }
+    catch let error { print("\(error)") }
+    do { categories = try Disk.retrieve("categories.json", from: .documents, as: [String].self) }
+    catch let error { print("\(error)") }
+    do { activities = try Disk.retrieve("activities.json", from: .documents, as: [String].self) }
+    catch let error { print("\(error)") }
+    
+    
+    var addCategories = false
+    if ( categories.count == 0 ) {
+      categories = ["Commute", "Deep Work", "Exercise", "Family", "Learning", "Meditation", "Mindfulness", "Morning Routine", "Relax", "Sleep", "Social", "Waste", "Work"]
+      addCategories = true
+    }
+    
+    var addActivities = false
+    if ( activities.count == 0 ) {
+      activities = ["Code", "Eat", "Hike", "Listen to Music", "Listen to Podcast", "Meditate", "Read", "Run", "Schoolwork", "Sleep", "Think", "TV"]
+      addActivities = true
+    }
+    
+    // Save to disk
+    if ( addCategories ) {
+      do { try Disk.save(categories, to: .documents, as: "categories.json") }
+      catch let error { print("\(error)") }
+    }
+    if ( addActivities ) {
+      do { try Disk.save(activities, to: .documents, as: "activities.json") }
+      catch let error { print("\(error)") }
+    }
+
+    
     return true
+    
   }
 
   func applicationWillResignActive(_ application: UIApplication) {
