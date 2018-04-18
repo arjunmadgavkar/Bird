@@ -8,150 +8,354 @@
 
 import UIKit
 import Disk
+import JTAppleCalendar
 
 // Adhere to AddBlockDelegate bc AddBlockVC tells us something and we do it for him
-class YourDayCollectionVC: UICollectionViewController, AddBlockDelegate {
+class YourDayCollectionVC: UIViewController {
+  // Calendar Properties
   let calendar = Calendar.current
+  let formatter : DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.timeZone = Calendar.current.timeZone
+    dateFormatter.locale = Calendar.current.locale
+    dateFormatter.dateFormat = "MM dd yyyy"
+    return dateFormatter
+  }()
+  let today : DateComponents = {
+    var dc = DateComponents()
+    dc.month = Calendar.current.component(.month, from: Date())
+    dc.day = Calendar.current.component(.day, from: Date())
+    dc.year = Calendar.current.component(.year, from: Date())
+    return dc
+  }()
+  var todayDate = Date()
+  var currentSelectedCell = CalendarCell()
+  var selectedTimeBlock: TimeBlock?
   var timeBlocks = [TimeBlock]()
   var currentDateBlocks = [TimeBlock]()
   fileprivate let sectionInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
   fileprivate let itemsPerRow: CGFloat = 1
+  // Outlets
+  @IBOutlet weak var timeBlockCollectionView: UICollectionView!
+  @IBOutlet weak var calendarCollectionView: JTAppleCalendarView!
+  
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+    viewControllerSetUp()
+    calendarPropertiesSetUp()
+    collectionViewSetUp()
+  }
+  
+  // MARK: VC Set Up
+  func viewControllerSetUp() {
+    self.title = "Your Day"
+    self.navigationController?.navigationBar.prefersLargeTitles = true
+    self.navigationController?.navigationBar.largeTitleTextAttributes = [
+      NSAttributedStringKey.foregroundColor: UIColor.black,
+      NSAttributedStringKey.font: AvenirNextHeavy(size: 40.0)
+    ]
+    // Set Image
+    var image = UIImage(named: "add_button")
+    image = image?.withRenderingMode(.alwaysOriginal)
+    self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style:.plain, target: self, action: #selector(addBtnClicked))
+    // Get rid of back button on next screen
+    let backItem = UIBarButtonItem()
+    backItem.title = ""
+    navigationItem.backBarButtonItem = backItem
+  }
+  
+  // MARK: Calendar Properties Set Up
+  func calendarPropertiesSetUp() {
+    todayDate = calendar.date(from: today)!
+    calendarCollectionView.selectDates([todayDate]) // select today's date right off the bat
+    calendarCollectionView.scrollToDate(Date(), animateScroll: false) // scroll to today's date
+    calendarCollectionView.scrollingMode = .stopAtEachSection
+    calendarCollectionView.allowsMultipleSelection = false
+    calendarCollectionView.minimumLineSpacing = 0 
+    calendarCollectionView.minimumInteritemSpacing = 0
+  }
+  
+  // MARK: Time Block CollectionView Set Up
+  func collectionViewSetUp() {
+    timeBlockCollectionView.delegate = self
+    timeBlockCollectionView.dataSource = self
+    getBlocksFromDisk()
+  }
+  
+  func getBlocksFromDisk() {
     do { timeBlocks = try Disk.retrieve("timeBlocks.json", from: .documents, as: [TimeBlock].self) }
     catch let error { print("\(error)") }
-    // Load up collectionView
-    for timeBlock in timeBlocks {
+    for timeBlock in timeBlocks { // Find the timeBlocks that are on today's date
       let userDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.startDate)
-      // Compare with today's date
-      var today = DateComponents()
-      today.month = calendar.component(.month, from: Date())
-      today.day = calendar.component(.day, from: Date())
-      today.year = calendar.component(.year, from: Date())
-      // If they added to today's calendar
       if ( userDate.month == today.month && userDate.day == today.day && userDate.year == today.year ) {
-        // Update set array
-        currentDateBlocks.append(timeBlock)
+        currentDateBlocks.append(timeBlock) // Add them to today's date blocks array
       }
     }
-    
-    // Organize by time
     currentDateBlocks.sort { (t1, t2) -> Bool in
-      if ( t1.startDate < t2.startDate ) { return true }
+      if ( t1.startDate < t2.startDate ) { return true } // Sort today's blocks by time
       return false
     }
-    
   }
   
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(true)
+  // MARK: Calendar Set Up 
+  func configureCell(cell: JTAppleCell?, cellState: CellState) {
+    guard let calendarCell = cell as? CalendarCell else { return }
+    handleCellTextColor(cell: calendarCell, cellState: cellState)
   }
   
+  func handleCellTextColor(cell: CalendarCell, cellState: CellState) {
+    //let todayDateString = formatter.string(from: todayDate)
+    //let monthDateString = formatter.string(from: cellState.date) // Use string values in case date is slightly off
+    //if ( todayDateString == monthDateString ) { cell.calendarCellLabel?.textColor = UIColor.yellow } // Yellow if it today's date
+    if ( cellState.date > todayDate ) { cell.calendarCellLabel?.textColor = UIColor.gray } // Gray if it's in the future
+    else { // Red selected, black if not
+      if ( cell.isSelected == true ) {
+        cell.calendarCellLabel?.textColor = UIColor.white
+        cell.selectedView.isHidden = false
+      }
+      else {
+        cell.calendarCellLabel?.textColor = UIColor.black
+        cell.selectedView.isHidden = true
+      }
+    }
+  }
+  
+  // CollectionView changes with calendar
+  func newDateSelected(date: Date) {
+    currentDateBlocks.removeAll()
+    let selectedDate : DateComponents = {
+      var selectedDC = DateComponents()
+      selectedDC.month = Calendar.current.component(.month, from: date)
+      selectedDC.day = Calendar.current.component(.day, from: date)
+      selectedDC.year = Calendar.current.component(.year, from: date)
+      return selectedDC
+    }()
+    for timeBlock in timeBlocks {
+      let userDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.startDate)
+      if ( userDate.month == selectedDate.month && userDate.day == selectedDate.day && userDate.year == selectedDate.year ) {
+        currentDateBlocks.append(timeBlock) // Add them to today's date blocks array
+      }
+    }
+    timeBlockCollectionView.reloadData()
+  }
+  
+  func didEdit() {
+    currentDateBlocks.removeAll()
+    getBlocksFromDisk()
+    timeBlockCollectionView.reloadData()
+  }
+  
+  @objc func addBtnClicked() {
+    performSegue(withIdentifier: "goToAddBlock", sender: nil)
+  }
+  
+  // MARK: Prepare for segue
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    // Tell addBlockVC that THIS VC is its delegate
-    if ( segue.identifier == "goToAddBlock" ) {
-      if let addBlockVC = segue.destination as? AddBlockVC {
-        // Set the addBlockVC's delegate to YourDayVC
+    if ( segue.identifier == "goToAddBlock" ) { // Tell addBlockVC that THIS VC is its delegate
+      if let addBlockVC = segue.destination as? AddBlockVC { // Set the addBlockVC's delegate to YourDayVC
         addBlockVC.addBlockDelegate = self as YourDayCollectionVC
       }
     }
+    if ( segue.identifier == "goToDetail" ) {
+      if let cell = sender as? UICollectionViewCell,
+        let indexPath = self.timeBlockCollectionView?.indexPath(for: cell) {
+        let backItem = UIBarButtonItem()
+        backItem.title = ""
+        navigationItem.backBarButtonItem = backItem
+        let vc = segue.destination as! TimeBlockDetailVC
+        vc.timeBlock = currentDateBlocks[indexPath.row]
+      }
+    }
   }
   
-  // MARK: Protocol
-  func didUpdate(timeBlock: TimeBlock) {
-    // Get the newly added date
-    let userDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.startDate)
-    // Compare with today's date
-    var today = DateComponents()
-    today.month = calendar.component(.month, from: Date())
-    today.day = calendar.component(.day, from: Date())
-    today.year = calendar.component(.year, from: Date())
-    // If they added to today's calendar
-    if ( userDate.month == today.month && userDate.day == today.day && userDate.year == today.year ) {
-      // Update VC
+  // MARK: Unwind segue
+  @IBAction func unwindToYourDay(segue: UIStoryboardSegue) {
+    if let _ = segue.source as? EditTimeBlockVC {
+      didEdit()
+    }
+  }
+  
+}
+
+// MARK: - AddBlockDelegate
+extension YourDayCollectionVC : AddBlockDelegate {
+  func didUpdate(timeBlock: TimeBlock, newTimeBlocks: [TimeBlock]) {
+    timeBlocks = newTimeBlocks // Update the array of timeBlocks
+    let userDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.startDate) // Get the newly added date
+    if ( userDate.month == today.month && userDate.day == today.day && userDate.year == today.year ) { // Compare with today's date
       currentDateBlocks.append(timeBlock)
       currentDateBlocks.sort { (t1, t2) -> Bool in
         if ( t1.startDate < t2.startDate ) { return true }
         return false
       }
-      self.collectionView?.reloadData()
+      self.timeBlockCollectionView?.reloadData() // Update VC
     }
   }
 }
+
 // MARK: - UICollectionViewDataSource
-extension YourDayCollectionVC {
-  override func numberOfSections(in collectionView: UICollectionView) -> Int {
+extension YourDayCollectionVC: UICollectionViewDataSource {
+  // Number of sections
+  func numberOfSections(in collectionView: UICollectionView) -> Int {
     return 1
   }
-  
-  override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+  // Number of cells
+  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return currentDateBlocks.count
   }
-  
-  override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "timeCell", for: indexPath) as! YourDayCollectionViewCell
+  // Data for each cell
+  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    let timeCell = collectionView.dequeueReusableCell(withReuseIdentifier: "timeCell", for: indexPath) as! YourDayCollectionViewCell
     
     // Activity label
     let timeBlock = currentDateBlocks[indexPath.row]
-    cell.categoryActivityLabel.text = timeBlock.category.name + " (" + timeBlock.activity + ")"
+    timeCell.categoryActivityLabel.numberOfLines = 0
+    timeCell.categoryActivityLabel.text = timeBlock.category.name + " (" + timeBlock.activity + ")"
     
     // Time label
+    var startTime, endTime: String!
     let userStartDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.startDate)
+    let userEndDate = calendar.dateComponents(in: calendar.timeZone, from: timeBlock.endDate)
+    
+    // Format minutes
     var startMinute = String(describing: userStartDate.minute!)
-    if ( startMinute == "0" ) { startMinute = "00" }
-    let startTime = String(describing: userStartDate.hour!) + ":" + startMinute
-    let userEndDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.endDate)
+    if ( startMinute == "0" ) { startMinute = "" }
+    else { startMinute = ":" + startMinute }
     var endMinute = String(describing: userStartDate.minute!)
-    if ( endMinute == "0" ) { endMinute = "00" }
-    let endTime = String(describing: userEndDate.hour!) + ":" + endMinute
-    cell.timeLabel.text = startTime + "-" + endTime
+    if ( endMinute == "0" ) { endMinute = "" }
+    else { endMinute = ":" + endMinute }
     
-    // Set color
-    cell.backgroundColor = UIColor(hex: timeBlock.category.color)
+    // Format hours
+    var startHour = userStartDate.hour!
+    if ( startHour == 0 ) { // midnight
+      startHour = startHour + 12
+      startTime = "\(startHour)" + "\(startMinute)" + "am"
+    } else if ( startHour > 0 && startHour < 12 ) { // morning
+      startTime = "\(startHour)" + "\(startMinute)" + "am"
+    } else if ( startHour >= 12 ) { // afternoon and evening
+      startHour = startHour - 12
+      startTime = "\(startHour)" + "\(startMinute)" + "pm"
+    }
     
-    return cell
+    var endHour = userEndDate.hour!
+    if ( endHour == 0 ) { // midnight
+      endHour = endHour + 12
+      endTime = "\(endHour)" + "\(endMinute)" + "am"
+    } else if ( endHour > 0 && endHour < 12 ) { // morning
+      endTime = "\(endHour)" + "\(endMinute)" + "am"
+    } else if ( endHour >= 12 ) { // afternoon and evening
+      endHour = endHour - 12
+      endTime = "\(endHour)" + "\(endMinute)" + "pm"
+    }
+    
+    timeCell.timeLabel.text = startTime + "-" + endTime + ":"
+    
+    // Set colors
+    timeCell.backgroundColor = UIColor(hex: timeBlock.category.color)
+    timeCell.layer.borderColor = UIColor.black.cgColor
+    timeCell.layer.borderWidth = 2
+    
+    return timeCell
   }
   
-  override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+  
+}
+extension YourDayCollectionVC : UICollectionViewDelegate {
+  
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     // Handled in the segue...
   }
+  
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension YourDayCollectionVC : UICollectionViewDelegateFlowLayout {
   // This function sets the size of a cell
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    // Calculate size of cell
-    let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
-    let availableWidth = view.frame.width - paddingSpace
-    let widthPerItem = availableWidth / itemsPerRow
+  
+    let widthPerItem = view.frame.width // Each item gets the full width of frame
     
     // Calculate height of cell
-    let collectionViewHeight = (self.collectionView?.frame.height)! * 2     // Height of CV
+    let collectionViewHeight = (self.timeBlockCollectionView?.frame.height)! * 2     // Height of CV
     let smallBlock = (collectionViewHeight/24)/4                            // Divide into 15 minute blocks
     let numberOfBlocks = (currentDateBlocks[indexPath.row].lengthOfTime)/15 // Get minutes and divide by 15
     let sizeOfBlock = CGFloat(numberOfBlocks) * smallBlock                  // Multiply by size of 15 minute blocks
     
     return CGSize(width: widthPerItem, height: sizeOfBlock)
   }
-  
-  //3
-  func collectionView(_ collectionView: UICollectionView,
-                      layout collectionViewLayout: UICollectionViewLayout,
-                      insetForSectionAt section: Int) -> UIEdgeInsets {
+  // This function determines the insets (which are all 0) for each section
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
     return sectionInsets
   }
-  
-  // 4
-  func collectionView(_ collectionView: UICollectionView,
-                      layout collectionViewLayout: UICollectionViewLayout,
-                      minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-    return sectionInsets.left
+  // This function determines the spacing between rows
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+    return 0.0
+  }
+  // This function determines the spacing between items
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    return 2.0
   }
   
+}
+
+extension YourDayCollectionVC: JTAppleCalendarViewDataSource {
+  func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
+    let startDate = formatter.date(from: "03 09 2018")
+    let params = ConfigurationParameters(startDate: startDate!,
+                                         endDate: Date(),
+                                         numberOfRows: 1,
+                                         generateInDates: .forFirstMonthOnly,
+                                         generateOutDates: .off,
+                                         hasStrictBoundaries: false)
+    return params
+  }
   
+}
+
+extension YourDayCollectionVC: JTAppleCalendarViewDelegate {
+  func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
+    let calendarCell = calendar.dequeueReusableCell(withReuseIdentifier: "calendarCell", for: indexPath) as! CalendarCell
+    calendarCell.calendarCellLabel.text = cellState.text
+    configureCell(cell: calendarCell, cellState: cellState) // Configure the cell properties
+    return calendarCell
+  }
+  
+  // This function is the same as above
+  func calendar(_ calendar: JTAppleCalendarView, willDisplay cell: JTAppleCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
+    let calendarCell = calendar.dequeueReusableCell(withReuseIdentifier: "calendarCell", for: indexPath) as! CalendarCell
+    calendarCell.calendarCellLabel.text = cellState.text
+    configureCell(cell: calendarCell, cellState: cellState) // Configure the cell properties
+  }
+  
+  /* Cell Selection */
+  func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
+    guard let calendarCell = cell as? CalendarCell else { return }
+    handleCellTextColor(cell: calendarCell, cellState: cellState) // Configure the cell properties
+    newDateSelected(date: date) // Show data from particular date
+  }
+  
+  /* Cell Selection from Future Dates */
+  func calendar(_ calendar: JTAppleCalendarView, shouldSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) -> Bool {
+    if ( cellState.date > todayDate ) { return false } // If the date is in the future, it cannot be selected
+    else { return true } // Otherwise, allow selection
+  }
+  
+  /* Cell De-selection */
+  func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
+    guard let calendarCell = cell as? CalendarCell else { return }
+    handleCellTextColor(cell: calendarCell, cellState: cellState) // Configure the cell properties
+  }
+  
+  /* Next 2 functions set up header */
+  func calendar(_ calendar: JTAppleCalendarView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTAppleCollectionReusableView {
+    let header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: "header", for: indexPath) as! CalendarHeaderView
+    return header
+  }
+  // Month size?
+  func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize? {
+    return MonthSize(defaultSize: 50)
+  }
   
 }
 

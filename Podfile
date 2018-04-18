@@ -10,6 +10,7 @@ target 'Bird' do
   pod 'Eureka'
   pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow'  
   pod 'UIColor_Hex_Swift'
+  pod 'JTAppleCalendar', '~> 7.0'
 
 
 

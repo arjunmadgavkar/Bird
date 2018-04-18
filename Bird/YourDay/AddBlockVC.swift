@@ -27,7 +27,30 @@ class AddBlockVC: FormViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    navigationItem.largeTitleDisplayMode = .never // No large title
+    dataPull() // Get data from disk + add to arrays
+    setUpForm() // Set up form with properties
+  }
+  
+  func dataPull() {
+    // Get data saved on Disk
+    do { timeBlocks = try Disk.retrieve("timeBlocks.json", from: .documents, as: [TimeBlock].self) }
+    catch let error { print("\(error)") }
+    do { categories = try Disk.retrieve("categories.json", from: .documents, as: [Category].self) }
+    catch let error { print("\(error)") }
+    do { activities = try Disk.retrieve("activities.json", from: .documents, as: [String].self) }
+    catch let error { print("\(error)") }
     
+    for cat in categories {
+      namesOfCategories.append(cat.name)
+      namesOfColors.append(cat.color)
+      if ( cat.color != "tempColor") {
+        categoriesWithColors.append(cat.name)
+      }
+    }
+  }
+  
+  func setUpForm() {
     let cal = Calendar.current
     var dc = DateComponents()
     var dcChanged = DateComponents()
@@ -46,26 +69,8 @@ class AddBlockVC: FormViewController {
     dc.minute = minute
     dcChanged.minute = minute
     dcEnd.minute = minute
-    
-    // Get data saved on Disk
-    do { timeBlocks = try Disk.retrieve("timeBlocks.json", from: .documents, as: [TimeBlock].self) }
-    catch let error { print("\(error)") }
-    do { categories = try Disk.retrieve("categories.json", from: .documents, as: [Category].self) }
-    catch let error { print("\(error)") }
-    do { activities = try Disk.retrieve("activities.json", from: .documents, as: [String].self) }
-    catch let error { print("\(error)") }
-    
-    for cat in categories {
-      namesOfCategories.append(cat.name)
-      namesOfColors.append(cat.color)
-      if ( cat.color != "tempColor") {
-        categoriesWithColors.append(cat.name)
-      }
-      print("Category: \(cat.name) | Color: \(cat.color)")
-    }
-  
-    // Row properties
-    NameRow.defaultCellSetup = { cell, row in
+
+    SuggestionAccessoryRow<String>.defaultCellSetup = { cell, row in
       cell.textLabel?.font = AvenirNext(size: 17.0)
       cell.textField?.font = AvenirNext(size: 17.0)
     }
@@ -73,11 +78,6 @@ class AddBlockVC: FormViewController {
       cell.textLabel?.font = AvenirNext(size: 17.0)
       cell.textView?.font = AvenirNext(size: 17.0)
       cell.placeholderLabel?.font = AvenirNext(size: 17.0)
-    }
-    TextRow.defaultCellSetup = { cell, row in
-      cell.textLabel?.font = AvenirNext(size: 17.0)
-      cell.textLabel?.numberOfLines = 0
-      cell.textField?.font = AvenirNext(size: 17.0)
     }
     SwitchRow.defaultCellSetup = { cell, row in
       cell.textLabel?.font = AvenirNext(size: 17.0)
@@ -108,9 +108,9 @@ class AddBlockVC: FormViewController {
         $0.filterFunction = { text in
           self.namesOfCategories.filter({ $0.hasPrefix(text) })
         }
-//        $0.onChange({ row in
-//          self.catColor = row.value
-//        })
+        //        $0.onChange({ row in
+        //          self.catColor = row.value
+        //        })
         $0.placeholder = "Deep Work"
         $0.title = "Category"
         $0.tag = "category"
@@ -199,7 +199,7 @@ class AddBlockVC: FormViewController {
       // Button
       +++ Section()
       <<< ButtonRow(){ row in
-          row.title = "⏰ Add Time Block ⏰"
+        row.title = "⏰ Add Time Block ⏰"
         }
         .onCellSelection({ (cell, row) in
           self.addTimeBlock()
@@ -211,7 +211,7 @@ class AddBlockVC: FormViewController {
     var color : UIColor?
     var flow, unpleasant : Bool?
     var activity, accomplishments, learnings : String?
-    var startTimeHour, startTimeMinute, endTimeHour, endTimeMinute, quality : Int?
+    var quality : Int?
     // Date properties
     let calendar = Calendar.current
     var startDateComponents = DateComponents()
@@ -219,41 +219,22 @@ class AddBlockVC: FormViewController {
     
     // Get form values
     let formValues = self.form.values()
-    // String values
-    if ( formValues["category"] != nil ) {
-      category = formValues["category"] as? String
-    }
-    if ( formValues["activity"] != nil ) {
-      activity = formValues["activity"] as? String
-    }
+    if ( formValues["category"] != nil ) { category = formValues["category"] as? String }
+    if ( formValues["activity"] != nil ) { activity = formValues["activity"] as? String }
     if ( formValues["color"] != nil ) {
       color = formValues["color"] as? UIColor
       shouldPickColor = false
     }
-    if ( formValues["accomplishments"] != nil ) {
-      accomplishments = formValues["accomplishments"] as? String
-    }
-    if ( formValues["learnings"] != nil ) {
-      learnings = formValues["learnings"] as? String
-    } else {
-      learnings = formValues["accomplishments"] as? String
-    }
-    // Int values
-    if ( formValues["rating"] != nil ) {
-      quality = formValues["rating"] as? Int
-    }
+    if ( formValues["accomplishments"] != nil ) { accomplishments = formValues["accomplishments"] as? String }
+    else { accomplishments = "Nothing added by user." }
+    if ( formValues["learnings"] != nil ) { learnings = formValues["learnings"] as? String }
+    else { learnings = "Nothing added by user." }
+    if ( formValues["rating"] != nil ) { quality = formValues["rating"] as? Int }
     // Boolean values
-    if ( formValues["flow"] != nil ) {
-      flow = formValues["flow"] as? Bool
-    } else {
-      flow = false;
-    }
-    if ( formValues["unpleasant"] != nil ) {
-      unpleasant = formValues["unpleasant"] as? Bool
-    } else {
-      unpleasant = false;
-    }
-    // Date values
+    if ( formValues["flow"] != nil ) { flow = formValues["flow"] as? Bool }
+    else { flow = false; }
+    if ( formValues["unpleasant"] != nil ) { unpleasant = formValues["unpleasant"] as? Bool }
+    else { unpleasant = false; }
     if ( formValues["start_time"] != nil ) {
       let date = formValues["start_time"] as? Date
       startDateComponents.hour = calendar.component(.hour, from: date!)
@@ -261,23 +242,19 @@ class AddBlockVC: FormViewController {
     }
     if ( formValues["end_time"] != nil ) {
       let date = formValues["end_time"] as? Date
-      endTimeHour = calendar.component(.hour, from: date!)
-      endTimeMinute = calendar.component(.minute, from: date!)
-      endDateComponents.hour = endTimeHour
-      endDateComponents.minute = endTimeMinute
+      endDateComponents.hour = calendar.component(.hour, from: date!)
+      endDateComponents.minute = calendar.component(.minute, from: date!)
     }
     if ( formValues["date"] != nil ) {
       let date = (formValues["date"] as? Date)!
-      // Set up dates
-      var localTimeZoneAbbreviation: String { return TimeZone.current.abbreviation() ?? "" }
       startDateComponents.month = calendar.component(.month, from: date)
       startDateComponents.day = calendar.component(.day, from: date)
       startDateComponents.year = calendar.component(.year, from: date)
-      startDateComponents.timeZone = TimeZone(abbreviation: localTimeZoneAbbreviation)
+      startDateComponents.timeZone = calendar.timeZone
       endDateComponents.month = calendar.component(.month, from: date)
       endDateComponents.day = calendar.component(.day, from: date)
       endDateComponents.year = calendar.component(.year, from: date)
-      endDateComponents.timeZone = TimeZone(abbreviation: localTimeZoneAbbreviation)
+      endDateComponents.timeZone = calendar.timeZone
     }
     
     let startDate = calendar.date(from: startDateComponents)
@@ -350,24 +327,14 @@ class AddBlockVC: FormViewController {
       do {
         try Disk.save(timeBlocks, to: .documents, as: "timeBlocks.json")
         // Tell YourDayCollectionVC that something changed, so YourDay can update its view
-        addBlockDelegate?.didUpdate(timeBlock: timeBlock)
+        addBlockDelegate?.didUpdate(timeBlock: timeBlock, newTimeBlocks: timeBlocks)
       }
       catch let error { print("\(error)") }
     } else {
-      if ( category == nil ) {
-        self.showAlert(withTitle: "Missing Information", message: "Please fill out the category.")
-      } else if ( activity == nil ) {
-        self.showAlert(withTitle: "Missing Information", message: "Please fill out the activity.")
-      } else if ( quality == nil ) {
-        self.showAlert(withTitle: "Missing Information", message: "Please rate the quality of the experience.")
-      } else {
-        self.showAlert(withTitle: "Missing Information", message: "Please pick a color.")
-      }
+      if ( category == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the category.") }
+      else if ( activity == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the activity.") }
+      else if ( quality == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please rate the quality of the experience.") }
+      else { self.showAlert(withTitle: "Missing Information", message: "Please pick a color.") }
     }
-  }
-  
-  
-  
-  
-  
+  } // addTimeBlock()
 }

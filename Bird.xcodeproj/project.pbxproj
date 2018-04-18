@@ -10,13 +10,6 @@
 		20A174CD1BC9ACD8D500FF3E /* Pods_BirdTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 744CED34D95442E033760225 /* Pods_BirdTests.framework */; };
 		98B8E20C0AB97DCD572C965D /* Pods_BirdUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEE72A3716C569CC96EEED12 /* Pods_BirdUITests.framework */; };
 		C8E0B1A504DE8E221E1EEBC7 /* Pods_Bird.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDEEC97BE7CEEC23EEFB7AA2 /* Pods_Bird.framework */; };
-		DC01F5122079775B00B0919E /* SuggestionTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC01F50B2079775B00B0919E /* SuggestionTableCell.swift */; };
-		DC01F5132079775B00B0919E /* SuggestionCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC01F50C2079775B00B0919E /* SuggestionCollectionCell.swift */; };
-		DC01F5142079775B00B0919E /* SuggestionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC01F50D2079775B00B0919E /* SuggestionRow.swift */; };
-		DC01F5152079775B00B0919E /* SuggestionCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC01F50E2079775B00B0919E /* SuggestionCollectionViewCell.swift */; };
-		DC01F5162079775B00B0919E /* SuggestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC01F50F2079775B00B0919E /* SuggestionCell.swift */; };
-		DC01F5172079775B00B0919E /* String+SuggestionValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC01F5102079775B00B0919E /* String+SuggestionValue.swift */; };
-		DC01F5182079775B00B0919E /* SuggestionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC01F5112079775B00B0919E /* SuggestionTableViewCell.swift */; };
 		DC038D182076480300E939AB /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC038D172076480300E939AB /* Protocols.swift */; };
 		DC038D2A2076B13E00E939AB /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC038D292076B13E00E939AB /* Category.swift */; };
 		DC038D2C2076B14600E939AB /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC038D2B2076B14600E939AB /* Activity.swift */; };
@@ -30,8 +23,19 @@
 		DC1AC122206D3F090015A7A8 /* YourDay.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC1AC121206D3F090015A7A8 /* YourDay.storyboard */; };
 		DC1AC125206D3FEE0015A7A8 /* YourDayCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1AC124206D3FEE0015A7A8 /* YourDayCollectionVC.swift */; };
 		DC1AC127206D40040015A7A8 /* AddBlockVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1AC126206D40040015A7A8 /* AddBlockVC.swift */; };
+		DC2D7AA9207A77E100D791D1 /* CalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2D7AA8207A77E100D791D1 /* CalendarCell.swift */; };
+		DC2D7AAB207BBF9F00D791D1 /* CalendarHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2D7AAA207BBF9F00D791D1 /* CalendarHeaderView.swift */; };
+		DC2D7AAD207FB3CB00D791D1 /* TimeBlockDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2D7AAC207FB3CB00D791D1 /* TimeBlockDetailVC.swift */; };
+		DC2D7AAF207FB3EA00D791D1 /* EditTimeBlockVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2D7AAE207FB3EA00D791D1 /* EditTimeBlockVC.swift */; };
 		DC48086D20753F230042E1A5 /* TimeBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC48086C20753F230042E1A5 /* TimeBlock.swift */; };
 		DC59F3ED206D42E50049722A /* Utilities + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59F3EC206D42E50049722A /* Utilities + Extensions.swift */; };
+		DC6E55BB20863932009AC151 /* String+SuggestionValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6E55B420863931009AC151 /* String+SuggestionValue.swift */; };
+		DC6E55BC20863932009AC151 /* SuggestionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6E55B520863931009AC151 /* SuggestionRow.swift */; };
+		DC6E55BD20863932009AC151 /* SuggestionCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6E55B620863932009AC151 /* SuggestionCollectionViewCell.swift */; };
+		DC6E55BE20863932009AC151 /* SuggestionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6E55B720863932009AC151 /* SuggestionTableViewCell.swift */; };
+		DC6E55BF20863932009AC151 /* SuggestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6E55B820863932009AC151 /* SuggestionCell.swift */; };
+		DC6E55C020863932009AC151 /* SuggestionCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6E55B920863932009AC151 /* SuggestionCollectionCell.swift */; };
+		DC6E55C120863932009AC151 /* SuggestionTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6E55BA20863932009AC151 /* SuggestionTableCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,13 +63,6 @@
 		7A865DCD953F2173353F8689 /* Pods-BirdTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BirdTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BirdTests/Pods-BirdTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B054346B50C715AA49DB0D81 /* Pods-BirdUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BirdUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BirdUITests/Pods-BirdUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		BB6051ECBC9BD7CDA7930483 /* Pods-BirdTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BirdTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BirdTests/Pods-BirdTests.release.xcconfig"; sourceTree = "<group>"; };
-		DC01F50B2079775B00B0919E /* SuggestionTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionTableCell.swift; path = "../../Downloads/SuggestionRow-master/Sources/SuggestionTableCell.swift"; sourceTree = "<group>"; };
-		DC01F50C2079775B00B0919E /* SuggestionCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionCollectionCell.swift; path = "../../Downloads/SuggestionRow-master/Sources/SuggestionCollectionCell.swift"; sourceTree = "<group>"; };
-		DC01F50D2079775B00B0919E /* SuggestionRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionRow.swift; path = "../../Downloads/SuggestionRow-master/Sources/SuggestionRow.swift"; sourceTree = "<group>"; };
-		DC01F50E2079775B00B0919E /* SuggestionCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionCollectionViewCell.swift; path = "../../Downloads/SuggestionRow-master/Sources/SuggestionCollectionViewCell.swift"; sourceTree = "<group>"; };
-		DC01F50F2079775B00B0919E /* SuggestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionCell.swift; path = "../../Downloads/SuggestionRow-master/Sources/SuggestionCell.swift"; sourceTree = "<group>"; };
-		DC01F5102079775B00B0919E /* String+SuggestionValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "String+SuggestionValue.swift"; path = "../../Downloads/SuggestionRow-master/Sources/String+SuggestionValue.swift"; sourceTree = "<group>"; };
-		DC01F5112079775B00B0919E /* SuggestionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionTableViewCell.swift; path = "../../Downloads/SuggestionRow-master/Sources/SuggestionTableViewCell.swift"; sourceTree = "<group>"; };
 		DC038D172076480300E939AB /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		DC038D292076B13E00E939AB /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		DC038D2B2076B14600E939AB /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
@@ -85,8 +82,19 @@
 		DC1AC121206D3F090015A7A8 /* YourDay.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = YourDay.storyboard; sourceTree = "<group>"; };
 		DC1AC124206D3FEE0015A7A8 /* YourDayCollectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourDayCollectionVC.swift; sourceTree = "<group>"; };
 		DC1AC126206D40040015A7A8 /* AddBlockVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBlockVC.swift; sourceTree = "<group>"; };
+		DC2D7AA8207A77E100D791D1 /* CalendarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCell.swift; sourceTree = "<group>"; };
+		DC2D7AAA207BBF9F00D791D1 /* CalendarHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarHeaderView.swift; sourceTree = "<group>"; };
+		DC2D7AAC207FB3CB00D791D1 /* TimeBlockDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockDetailVC.swift; sourceTree = "<group>"; };
+		DC2D7AAE207FB3EA00D791D1 /* EditTimeBlockVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTimeBlockVC.swift; sourceTree = "<group>"; };
 		DC48086C20753F230042E1A5 /* TimeBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlock.swift; sourceTree = "<group>"; };
 		DC59F3EC206D42E50049722A /* Utilities + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Utilities + Extensions.swift"; sourceTree = "<group>"; };
+		DC6E55B420863931009AC151 /* String+SuggestionValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "String+SuggestionValue.swift"; path = "../../Desktop/Arjun/Coding + MVPs/SuggestionRow-master/Sources/String+SuggestionValue.swift"; sourceTree = "<group>"; };
+		DC6E55B520863931009AC151 /* SuggestionRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionRow.swift; path = "../../Desktop/Arjun/Coding + MVPs/SuggestionRow-master/Sources/SuggestionRow.swift"; sourceTree = "<group>"; };
+		DC6E55B620863932009AC151 /* SuggestionCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionCollectionViewCell.swift; path = "../../Desktop/Arjun/Coding + MVPs/SuggestionRow-master/Sources/SuggestionCollectionViewCell.swift"; sourceTree = "<group>"; };
+		DC6E55B720863932009AC151 /* SuggestionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionTableViewCell.swift; path = "../../Desktop/Arjun/Coding + MVPs/SuggestionRow-master/Sources/SuggestionTableViewCell.swift"; sourceTree = "<group>"; };
+		DC6E55B820863932009AC151 /* SuggestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionCell.swift; path = "../../Desktop/Arjun/Coding + MVPs/SuggestionRow-master/Sources/SuggestionCell.swift"; sourceTree = "<group>"; };
+		DC6E55B920863932009AC151 /* SuggestionCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionCollectionCell.swift; path = "../../Desktop/Arjun/Coding + MVPs/SuggestionRow-master/Sources/SuggestionCollectionCell.swift"; sourceTree = "<group>"; };
+		DC6E55BA20863932009AC151 /* SuggestionTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionTableCell.swift; path = "../../Desktop/Arjun/Coding + MVPs/SuggestionRow-master/Sources/SuggestionTableCell.swift"; sourceTree = "<group>"; };
 		DEE72A3716C569CC96EEED12 /* Pods_BirdUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BirdUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDEEC97BE7CEEC23EEFB7AA2 /* Pods_Bird.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bird.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -145,13 +153,13 @@
 		DC01F50A2079774600B0919E /* SuggestionRow */ = {
 			isa = PBXGroup;
 			children = (
-				DC01F5102079775B00B0919E /* String+SuggestionValue.swift */,
-				DC01F50F2079775B00B0919E /* SuggestionCell.swift */,
-				DC01F50C2079775B00B0919E /* SuggestionCollectionCell.swift */,
-				DC01F50E2079775B00B0919E /* SuggestionCollectionViewCell.swift */,
-				DC01F50D2079775B00B0919E /* SuggestionRow.swift */,
-				DC01F50B2079775B00B0919E /* SuggestionTableCell.swift */,
-				DC01F5112079775B00B0919E /* SuggestionTableViewCell.swift */,
+				DC6E55B420863931009AC151 /* String+SuggestionValue.swift */,
+				DC6E55B820863932009AC151 /* SuggestionCell.swift */,
+				DC6E55B920863932009AC151 /* SuggestionCollectionCell.swift */,
+				DC6E55B620863932009AC151 /* SuggestionCollectionViewCell.swift */,
+				DC6E55B520863931009AC151 /* SuggestionRow.swift */,
+				DC6E55BA20863932009AC151 /* SuggestionTableCell.swift */,
+				DC6E55B720863932009AC151 /* SuggestionTableViewCell.swift */,
 			);
 			path = SuggestionRow;
 			sourceTree = "<group>";
@@ -168,7 +176,9 @@
 		DC038D462077E2D300E939AB /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				DC2D7AAA207BBF9F00D791D1 /* CalendarHeaderView.swift */,
 				DC038D472077E30800E939AB /* YourDayCollectionViewCell.swift */,
+				DC2D7AA8207A77E100D791D1 /* CalendarCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -244,6 +254,8 @@
 			children = (
 				DC1AC124206D3FEE0015A7A8 /* YourDayCollectionVC.swift */,
 				DC1AC126206D40040015A7A8 /* AddBlockVC.swift */,
+				DC2D7AAC207FB3CB00D791D1 /* TimeBlockDetailVC.swift */,
+				DC2D7AAE207FB3EA00D791D1 /* EditTimeBlockVC.swift */,
 			);
 			path = YourDay;
 			sourceTree = "<group>";
@@ -270,7 +282,6 @@
 				DC1AC0EB206D3E7B0015A7A8 /* Frameworks */,
 				DC1AC0EC206D3E7B0015A7A8 /* Resources */,
 				8B6C4746C1AF513CDA9B85D5 /* [CP] Embed Pods Frameworks */,
-				C448267BD46E2165480CEA08 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -289,8 +300,6 @@
 				DC1AC100206D3E7C0015A7A8 /* Sources */,
 				DC1AC101206D3E7C0015A7A8 /* Frameworks */,
 				DC1AC102206D3E7C0015A7A8 /* Resources */,
-				37DD816BBE28436DF0EAC45F /* [CP] Embed Pods Frameworks */,
-				8003F080D60B356A8E939C75 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -310,8 +319,6 @@
 				DC1AC10B206D3E7C0015A7A8 /* Sources */,
 				DC1AC10C206D3E7C0015A7A8 /* Frameworks */,
 				DC1AC10D206D3E7C0015A7A8 /* Resources */,
-				63A0D25F2805FBBCAC5DFF14 /* [CP] Embed Pods Frameworks */,
-				476119A44806661094596DC4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -404,73 +411,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BirdUITests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		37DD816BBE28436DF0EAC45F /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BirdTests/Pods-BirdTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		476119A44806661094596DC4 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BirdUITests/Pods-BirdUITests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		63A0D25F2805FBBCAC5DFF14 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BirdUITests/Pods-BirdUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8003F080D60B356A8E939C75 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BirdTests/Pods-BirdTests-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8B6C4746C1AF513CDA9B85D5 /* [CP] Embed Pods Frameworks */ = {
@@ -479,9 +429,20 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Bird/Pods-Bird-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/ColorPickerRow/ColorPickerRow.framework",
+				"${BUILT_PRODUCTS_DIR}/Disk/Disk.framework",
+				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
+				"${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework",
+				"${BUILT_PRODUCTS_DIR}/UIColor_Hex_Swift/UIColor_Hex_Swift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ColorPickerRow.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Disk.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JTAppleCalendar.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIColor_Hex_Swift.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -494,13 +455,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BirdTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9B7CA1ABB06D525576C7D4BC /* [CP] Check Pods Manifest.lock */ = {
@@ -509,28 +473,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Bird-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		C448267BD46E2165480CEA08 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Bird/Pods-Bird-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -541,20 +493,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC038D2C2076B14600E939AB /* Activity.swift in Sources */,
+				DC2D7AAF207FB3EA00D791D1 /* EditTimeBlockVC.swift in Sources */,
+				DC2D7AA9207A77E100D791D1 /* CalendarCell.swift in Sources */,
+				DC6E55BF20863932009AC151 /* SuggestionCell.swift in Sources */,
+				DC6E55C120863932009AC151 /* SuggestionTableCell.swift in Sources */,
 				DC48086D20753F230042E1A5 /* TimeBlock.swift in Sources */,
+				DC6E55C020863932009AC151 /* SuggestionCollectionCell.swift in Sources */,
 				DC1AC127206D40040015A7A8 /* AddBlockVC.swift in Sources */,
-				DC01F5182079775B00B0919E /* SuggestionTableViewCell.swift in Sources */,
-				DC01F5162079775B00B0919E /* SuggestionCell.swift in Sources */,
 				DC1AC125206D3FEE0015A7A8 /* YourDayCollectionVC.swift in Sources */,
-				DC01F5122079775B00B0919E /* SuggestionTableCell.swift in Sources */,
+				DC2D7AAB207BBF9F00D791D1 /* CalendarHeaderView.swift in Sources */,
+				DC6E55BC20863932009AC151 /* SuggestionRow.swift in Sources */,
 				DC038D182076480300E939AB /* Protocols.swift in Sources */,
 				DC59F3ED206D42E50049722A /* Utilities + Extensions.swift in Sources */,
-				DC01F5132079775B00B0919E /* SuggestionCollectionCell.swift in Sources */,
+				DC2D7AAD207FB3CB00D791D1 /* TimeBlockDetailVC.swift in Sources */,
+				DC6E55BE20863932009AC151 /* SuggestionTableViewCell.swift in Sources */,
+				DC6E55BB20863932009AC151 /* String+SuggestionValue.swift in Sources */,
+				DC6E55BD20863932009AC151 /* SuggestionCollectionViewCell.swift in Sources */,
 				DC1AC0F2206D3E7B0015A7A8 /* AppDelegate.swift in Sources */,
-				DC01F5172079775B00B0919E /* String+SuggestionValue.swift in Sources */,
-				DC01F5152079775B00B0919E /* SuggestionCollectionViewCell.swift in Sources */,
 				DC038D2A2076B13E00E939AB /* Category.swift in Sources */,
-				DC01F5142079775B00B0919E /* SuggestionRow.swift in Sources */,
 				DC038D482077E30800E939AB /* YourDayCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
