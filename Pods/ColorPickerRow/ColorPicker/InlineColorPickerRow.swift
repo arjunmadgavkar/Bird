@@ -65,9 +65,10 @@ public class _InlineColorPickerRow: Row<InlineColorPickerCell> {
         }
     }
 
-    open var palettes : [ColorPalette] = [  //iOS().palette,
+    open var palettes : [ColorPalette] = [
+                                            //iOS().palette,
                                             //Solarised().palette,
-                                            //WP8().palette,
+                                           // WP8().palette,
                                             //Flat().palette,
                                             Material().palette
                                             //Metro().palette

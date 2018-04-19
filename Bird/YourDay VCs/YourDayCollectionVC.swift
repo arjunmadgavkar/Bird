@@ -69,7 +69,7 @@ class YourDayCollectionVC: UIViewController {
   func calendarPropertiesSetUp() {
     todayDate = calendar.date(from: today)!
     calendarCollectionView.selectDates([todayDate]) // select today's date right off the bat
-    calendarCollectionView.scrollToDate(Date(), animateScroll: false) // scroll to today's date
+    calendarCollectionView.scrollToDate(todayDate, animateScroll: false) // scroll to today's date
     calendarCollectionView.scrollingMode = .stopAtEachSection
     calendarCollectionView.allowsMultipleSelection = false
     calendarCollectionView.minimumLineSpacing = 0 
@@ -105,16 +105,14 @@ class YourDayCollectionVC: UIViewController {
   }
   
   func handleCellTextColor(cell: CalendarCell, cellState: CellState) {
-    //let todayDateString = formatter.string(from: todayDate)
-    //let monthDateString = formatter.string(from: cellState.date) // Use string values in case date is slightly off
-    //if ( todayDateString == monthDateString ) { cell.calendarCellLabel?.textColor = UIColor.yellow } // Yellow if it today's date
-    if ( cellState.date > todayDate ) { cell.calendarCellLabel?.textColor = UIColor.gray } // Gray if it's in the future
-    else { // Red selected, black if not
-      if ( cell.isSelected == true ) {
+    if ( cellState.date > todayDate ) { // Gray if it's in the future
+      cell.calendarCellLabel?.textColor = UIColor.gray
+      cell.selectedView.isHidden = true
+    } else {
+      if ( cellState.isSelected ) { // If selected
         cell.calendarCellLabel?.textColor = UIColor.white
         cell.selectedView.isHidden = false
-      }
-      else {
+      } else { // If not selected
         cell.calendarCellLabel?.textColor = UIColor.black
         cell.selectedView.isHidden = true
       }
@@ -215,6 +213,7 @@ extension YourDayCollectionVC: UICollectionViewDataSource {
     
     // Time label
     var startTime, endTime: String!
+    var startTimeMorning, startTimePM, endTimeMorning, endTimePM: Bool!
     let userStartDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.startDate)
     let userEndDate = calendar.dateComponents(in: calendar.timeZone, from: timeBlock.endDate)
     
@@ -230,22 +229,38 @@ extension YourDayCollectionVC: UICollectionViewDataSource {
     var startHour = userStartDate.hour!
     if ( startHour == 0 ) { // midnight
       startHour = startHour + 12
-      startTime = "\(startHour)" + "\(startMinute)" + "am"
-    } else if ( startHour > 0 && startHour < 12 ) { // morning
-      startTime = "\(startHour)" + "\(startMinute)" + "am"
+      startTimeMorning = true
+      startTimePM = false
+    } else if ( startHour > 0 && startHour < 12)  { // morning
+      startTimeMorning = true
+      startTimePM = false
     } else if ( startHour >= 12 ) { // afternoon and evening
       startHour = startHour - 12
-      startTime = "\(startHour)" + "\(startMinute)" + "pm"
+      startTimeMorning = false
+      startTimePM = true
     }
-    
     var endHour = userEndDate.hour!
     if ( endHour == 0 ) { // midnight
       endHour = endHour + 12
-      endTime = "\(endHour)" + "\(endMinute)" + "am"
+      endTimeMorning = true
+      endTimePM = false
     } else if ( endHour > 0 && endHour < 12 ) { // morning
-      endTime = "\(endHour)" + "\(endMinute)" + "am"
+      endTimeMorning = true
+      endTimePM = false
     } else if ( endHour >= 12 ) { // afternoon and evening
       endHour = endHour - 12
+      endTimeMorning = false
+      endTimePM = true
+    }
+    
+    if ( startTimeMorning && endTimeMorning ) { // both am
+      startTime = "\(startHour)" + "\(startMinute)"
+      endTime = "\(endHour)" + "\(endMinute)" + "am"
+    } else if ( startTimePM && endTimePM ) { // both pm
+      startTime = "\(startHour)" + "\(startMinute)"
+      endTime = "\(endHour)" + "\(endMinute)" + "pm"
+    } else { // different
+      startTime = "\(startHour)" + "\(startMinute)" + "am"
       endTime = "\(endHour)" + "\(endMinute)" + "pm"
     }
     
@@ -314,16 +329,22 @@ extension YourDayCollectionVC: JTAppleCalendarViewDataSource {
 }
 
 extension YourDayCollectionVC: JTAppleCalendarViewDelegate {
+  /*
+   
+   * CollectionView requests content for cell that is going to be displayed soon (the cell is about to enter the visible field).
+   * The cell is either created for the first time
+   
+  */
   func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
-    let calendarCell = calendar.dequeueReusableCell(withReuseIdentifier: "calendarCell", for: indexPath) as! CalendarCell
-    calendarCell.calendarCellLabel.text = cellState.text
-    configureCell(cell: calendarCell, cellState: cellState) // Configure the cell properties
+    let calendarCell = calendar.dequeueReusableCell(withReuseIdentifier: "calendarCell", for: indexPath) as! CalendarCell // Gets a calCell object
+    calendarCell.calendarCellLabel.text = cellState.text // Since the calCell object is empty, we need to give it text
+    configureCell(cell: calendarCell, cellState: cellState) // Configure remaining cell properties
     return calendarCell
   }
   
-  // This function is the same as above
+  // (2) CollectionView is requesting to display the cell after it has its view ready (the cell just became visible).
   func calendar(_ calendar: JTAppleCalendarView, willDisplay cell: JTAppleCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
-    let calendarCell = calendar.dequeueReusableCell(withReuseIdentifier: "calendarCell", for: indexPath) as! CalendarCell
+    let calendarCell = cell as! CalendarCell
     calendarCell.calendarCellLabel.text = cellState.text
     configureCell(cell: calendarCell, cellState: cellState) // Configure the cell properties
   }
@@ -331,7 +352,7 @@ extension YourDayCollectionVC: JTAppleCalendarViewDelegate {
   /* Cell Selection */
   func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
     guard let calendarCell = cell as? CalendarCell else { return }
-    handleCellTextColor(cell: calendarCell, cellState: cellState) // Configure the cell properties
+    configureCell(cell: calendarCell, cellState: cellState) // Configure the cell properties
     newDateSelected(date: date) // Show data from particular date
   }
   
@@ -344,7 +365,7 @@ extension YourDayCollectionVC: JTAppleCalendarViewDelegate {
   /* Cell De-selection */
   func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
     guard let calendarCell = cell as? CalendarCell else { return }
-    handleCellTextColor(cell: calendarCell, cellState: cellState) // Configure the cell properties
+    configureCell(cell: calendarCell, cellState: cellState) // Configure the cell properties
   }
   
   /* Next 2 functions set up header */

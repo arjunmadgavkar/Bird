@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3zw-Fu-SZR">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Goals CollectionVC-->
+        <scene sceneID="G0m-n7-Mvh">
+            <objects>
+                <collectionViewController storyboardIdentifier="GoalsCollectionVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hHE-H8-4ba" customClass="GoalsCollectionVC" customModule="Bird" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="njb-QH-KKh">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Dxm-eH-hr8">
+                            <size key="itemSize" width="356" height="167"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="GoalCell" id="iZL-Vv-g4A" customClass="GoalsCollectionViewCell" customModule="Bird" customModuleProvider="target">
+                                <rect key="frame" x="9.5" y="0.0" width="356" height="167"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="356" height="167"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Meditate (1 hr per day)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2c4-Ep-TuP">
+                                            <rect key="frame" x="10" y="72" width="246" height="23.5"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&gt;" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n12-In-iPT">
+                                            <rect key="frame" x="331" y="72" width="15" height="23.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="15" id="W6j-6R-Vcm"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100🔥" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Gx-Wu-tAo">
+                                            <rect key="frame" x="266" y="72" width="55" height="23.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="55" id="5aW-Ax-6mN"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </view>
+                                <constraints>
+                                    <constraint firstItem="2c4-Ep-TuP" firstAttribute="centerY" secondItem="iZL-Vv-g4A" secondAttribute="centerY" id="1Cf-Lk-RpA"/>
+                                    <constraint firstItem="n12-In-iPT" firstAttribute="centerY" secondItem="iZL-Vv-g4A" secondAttribute="centerY" id="G9H-uk-K2s"/>
+                                    <constraint firstItem="2c4-Ep-TuP" firstAttribute="leading" secondItem="iZL-Vv-g4A" secondAttribute="leading" constant="10" id="JLr-DW-Kgq"/>
+                                    <constraint firstItem="3Gx-Wu-tAo" firstAttribute="leading" secondItem="2c4-Ep-TuP" secondAttribute="trailing" constant="10" id="Mce-l8-N83"/>
+                                    <constraint firstItem="3Gx-Wu-tAo" firstAttribute="centerY" secondItem="iZL-Vv-g4A" secondAttribute="centerY" id="S40-yw-cd3"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="n12-In-iPT" secondAttribute="trailing" constant="2" id="Yrf-7F-ApM"/>
+                                    <constraint firstItem="n12-In-iPT" firstAttribute="leading" secondItem="3Gx-Wu-tAo" secondAttribute="trailing" constant="10" id="l5p-Hk-47O"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="goalTextLabel" destination="2c4-Ep-TuP" id="1K5-oP-Ap6"/>
+                                    <outlet property="streakCountLabel" destination="3Gx-Wu-tAo" id="I82-si-isF"/>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="hHE-H8-4ba" id="czo-b5-W5t"/>
+                            <outlet property="delegate" destination="hHE-H8-4ba" id="sIA-80-nZR"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" id="9S1-bS-Eyy">
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="Giz-1j-0Cb">
+                            <connections>
+                                <segue destination="65G-xO-u4o" kind="show" identifier="goToAddGoalVC" id="wpf-7g-uzm"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="laK-gQ-n3m" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="612" y="106"/>
+        </scene>
+        <!--Add GoalVC-->
+        <scene sceneID="W1M-Td-Exh">
+            <objects>
+                <viewController id="65G-xO-u4o" customClass="AddGoalVC" customModule="Bird" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="6fi-sR-sYq">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="IQN-jk-PaA"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lh5-Tl-wFW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1329" y="106"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="bXs-hj-kQN">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3zw-Fu-SZR" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="ACb-Xd-aNA">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="hHE-H8-4ba" kind="relationship" relationship="rootViewController" id="wAv-ih-rul"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OgS-2n-Mrg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-146.40000000000001" y="105.69715142428787"/>
+        </scene>
+    </scenes>
+</document>

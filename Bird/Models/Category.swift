@@ -10,22 +10,22 @@ import UIKit
 import Eureka
 import Foundation
 
-struct Category : Codable {
-  let name : String
-  let color : String
+struct Category: Codable {
+  let name: String
+  let color: String
   
-  init(name : String) {
+  init(name: String) {
     self.name = name
     self.color = "tempColor"
   }
-  init(name : String, color : String) {
+  init(name: String, color: String) {
     self.name = name
     self.color = color
   }
 }
 
 // SuggestionRow Protocol
-extension Category : SuggestionValue {
+extension Category: SuggestionValue {
   init?(string stringValue: String) {
     return nil
   }

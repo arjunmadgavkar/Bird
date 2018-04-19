@@ -36,6 +36,11 @@
 		DC6E55BF20863932009AC151 /* SuggestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6E55B820863932009AC151 /* SuggestionCell.swift */; };
 		DC6E55C020863932009AC151 /* SuggestionCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6E55B920863932009AC151 /* SuggestionCollectionCell.swift */; };
 		DC6E55C120863932009AC151 /* SuggestionTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6E55BA20863932009AC151 /* SuggestionTableCell.swift */; };
+		DCB8704120881A7100EECF06 /* Goals.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCB8704020881A7100EECF06 /* Goals.storyboard */; };
+		DCB8704320881B1400EECF06 /* GoalsCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB8704220881B1400EECF06 /* GoalsCollectionVC.swift */; };
+		DCB8704620881C9800EECF06 /* GoalsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB8704520881C9800EECF06 /* GoalsCollectionViewCell.swift */; };
+		DCB87048208821B900EECF06 /* AddGoalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB87047208821B900EECF06 /* AddGoalVC.swift */; };
+		DCB8704A2088246E00EECF06 /* Goal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB870492088246E00EECF06 /* Goal.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +100,11 @@
 		DC6E55B820863932009AC151 /* SuggestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionCell.swift; path = "../../Desktop/Arjun/Coding + MVPs/SuggestionRow-master/Sources/SuggestionCell.swift"; sourceTree = "<group>"; };
 		DC6E55B920863932009AC151 /* SuggestionCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionCollectionCell.swift; path = "../../Desktop/Arjun/Coding + MVPs/SuggestionRow-master/Sources/SuggestionCollectionCell.swift"; sourceTree = "<group>"; };
 		DC6E55BA20863932009AC151 /* SuggestionTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionTableCell.swift; path = "../../Desktop/Arjun/Coding + MVPs/SuggestionRow-master/Sources/SuggestionTableCell.swift"; sourceTree = "<group>"; };
+		DCB8704020881A7100EECF06 /* Goals.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Goals.storyboard; sourceTree = "<group>"; };
+		DCB8704220881B1400EECF06 /* GoalsCollectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsCollectionVC.swift; sourceTree = "<group>"; };
+		DCB8704520881C9800EECF06 /* GoalsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsCollectionViewCell.swift; sourceTree = "<group>"; };
+		DCB87047208821B900EECF06 /* AddGoalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGoalVC.swift; sourceTree = "<group>"; };
+		DCB870492088246E00EECF06 /* Goal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goal.swift; sourceTree = "<group>"; };
 		DEE72A3716C569CC96EEED12 /* Pods_BirdUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BirdUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDEEC97BE7CEEC23EEFB7AA2 /* Pods_Bird.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bird.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -179,6 +189,7 @@
 				DC2D7AAA207BBF9F00D791D1 /* CalendarHeaderView.swift */,
 				DC038D472077E30800E939AB /* YourDayCollectionViewCell.swift */,
 				DC2D7AA8207A77E100D791D1 /* CalendarCell.swift */,
+				DCB8704520881C9800EECF06 /* GoalsCollectionViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -213,7 +224,8 @@
 				DC038D192076481000E939AB /* Utilities, Extensions, Protocols */,
 				DC48086E20753F2E0042E1A5 /* Models */,
 				DC038D462077E2D300E939AB /* Views */,
-				DC1AC128206D40100015A7A8 /* YourDay */,
+				DC1AC128206D40100015A7A8 /* YourDay VCs */,
+				DCB8704420881B1A00EECF06 /* Goals VCs */,
 				DC1AC123206D3F1D0015A7A8 /* Storyboards */,
 				DC1AC0FA206D3E7B0015A7A8 /* Assets.xcassets */,
 				DC1AC0FF206D3E7B0015A7A8 /* Info.plist */,
@@ -244,12 +256,13 @@
 			children = (
 				DC1AC0F7206D3E7B0015A7A8 /* Main.storyboard */,
 				DC1AC121206D3F090015A7A8 /* YourDay.storyboard */,
+				DCB8704020881A7100EECF06 /* Goals.storyboard */,
 				DC1AC0FC206D3E7B0015A7A8 /* LaunchScreen.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
 		};
-		DC1AC128206D40100015A7A8 /* YourDay */ = {
+		DC1AC128206D40100015A7A8 /* YourDay VCs */ = {
 			isa = PBXGroup;
 			children = (
 				DC1AC124206D3FEE0015A7A8 /* YourDayCollectionVC.swift */,
@@ -257,7 +270,7 @@
 				DC2D7AAC207FB3CB00D791D1 /* TimeBlockDetailVC.swift */,
 				DC2D7AAE207FB3EA00D791D1 /* EditTimeBlockVC.swift */,
 			);
-			path = YourDay;
+			path = "YourDay VCs";
 			sourceTree = "<group>";
 		};
 		DC48086E20753F2E0042E1A5 /* Models */ = {
@@ -266,8 +279,18 @@
 				DC48086C20753F230042E1A5 /* TimeBlock.swift */,
 				DC038D292076B13E00E939AB /* Category.swift */,
 				DC038D2B2076B14600E939AB /* Activity.swift */,
+				DCB870492088246E00EECF06 /* Goal.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		DCB8704420881B1A00EECF06 /* Goals VCs */ = {
+			isa = PBXGroup;
+			children = (
+				DCB8704220881B1400EECF06 /* GoalsCollectionVC.swift */,
+				DCB87047208821B900EECF06 /* AddGoalVC.swift */,
+			);
+			path = "Goals VCs";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -381,6 +404,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCB8704120881A7100EECF06 /* Goals.storyboard in Resources */,
 				DC1AC0FE206D3E7B0015A7A8 /* LaunchScreen.storyboard in Resources */,
 				DC1AC0FB206D3E7B0015A7A8 /* Assets.xcassets in Resources */,
 				DC1AC122206D3F090015A7A8 /* YourDay.storyboard in Resources */,
@@ -504,14 +528,18 @@
 				DC2D7AAB207BBF9F00D791D1 /* CalendarHeaderView.swift in Sources */,
 				DC6E55BC20863932009AC151 /* SuggestionRow.swift in Sources */,
 				DC038D182076480300E939AB /* Protocols.swift in Sources */,
+				DCB87048208821B900EECF06 /* AddGoalVC.swift in Sources */,
 				DC59F3ED206D42E50049722A /* Utilities + Extensions.swift in Sources */,
 				DC2D7AAD207FB3CB00D791D1 /* TimeBlockDetailVC.swift in Sources */,
 				DC6E55BE20863932009AC151 /* SuggestionTableViewCell.swift in Sources */,
+				DCB8704A2088246E00EECF06 /* Goal.swift in Sources */,
 				DC6E55BB20863932009AC151 /* String+SuggestionValue.swift in Sources */,
 				DC6E55BD20863932009AC151 /* SuggestionCollectionViewCell.swift in Sources */,
 				DC1AC0F2206D3E7B0015A7A8 /* AppDelegate.swift in Sources */,
 				DC038D2A2076B13E00E939AB /* Category.swift in Sources */,
 				DC038D482077E30800E939AB /* YourDayCollectionViewCell.swift in Sources */,
+				DCB8704320881B1400EECF06 /* GoalsCollectionVC.swift in Sources */,
+				DCB8704620881C9800EECF06 /* GoalsCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
