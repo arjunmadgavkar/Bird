@@ -26,22 +26,10 @@ class EditTimeBlockVC: FormViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    //self.createNavgiationBar() // Create nav bar
     dataPull() // Pull data
     setUpForm() // Set up form
   }
   
-//  func createNavgiationBar() {
-//    let screenSize: CGRect = UIScreen.main.bounds
-//    let navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: 44))
-//    let navItem = UINavigationItem(title: "")
-//    let cancelItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.cancel, target: nil, action: #selector(cancel))
-//    let doneItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: nil, action: #selector(editTimeBlock))
-//    navItem.leftBarButtonItem = cancelItem
-//    navItem.rightBarButtonItem = doneItem
-//    navBar.setItems([navItem], animated: false)
-//    self.view.addSubview(navBar)
-//  }
   
   func dataPull() {
     // Get data saved on Disk

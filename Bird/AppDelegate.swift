@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
   var timeBlocks = [TimeBlock]()
   var categories = [Category]()
+  var goals = [Goal]()
   var activities = [String]()
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -29,6 +30,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      catch let error { print("\(error)") }
      do { try Disk.remove("activities.json", from: .documents) }
      catch let error { print("\(error)") }
+     do { try Disk.remove("goals.json", from: .documents) }
+     catch let error { print("\(error)") }
      
      */
     
@@ -38,6 +41,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     catch let error { print("\(error)") }
     do { activities = try Disk.retrieve("activities.json", from: .documents, as: [String].self) }
     catch let error { print("\(error)") }
+    do { goals = try Disk.retrieve("goals.json", from: .documents, as: [Goal].self) }
+    catch let error { print("\(error)") }
+    
+    if ( goals.count > 0 ) {
+      for goal in goals {
+        goal.setCurrentStreak()
+      }
+    }
+    
     
     
     var addCategories = false

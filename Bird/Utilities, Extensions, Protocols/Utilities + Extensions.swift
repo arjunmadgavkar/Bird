@@ -9,10 +9,10 @@
 import UIKit
 
 func AvenirNext(size: Float) -> UIFont { return UIFont(name: "Avenir Next", size: CGFloat(size))! }
-//func AvenirNextDynamicBody() -> UIFont { return UIFont(descriptor: UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.body), size: 0)}
 func AvenirNextHeavy(size: Float) -> UIFont { return UIFont(name: "Avenir-Heavy", size: CGFloat(size))! }
 func imagineRed() -> UIColor { return UIColor(rgb: 0xFF5964).withAlphaComponent(1.0) }
 func imagineBlue() -> UIColor { return UIColor(rgb: 0x060A78).withAlphaComponent(1.0) }
+func secondsInADay() -> Double { return 86400.0 }
 
 // MARK: UIViewController
 extension UIViewController {

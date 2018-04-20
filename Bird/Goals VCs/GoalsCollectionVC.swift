@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Disk
 
 class GoalsCollectionVC: UICollectionViewController {
   var goals = [Goal]()
@@ -14,6 +15,13 @@ class GoalsCollectionVC: UICollectionViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     viewControllerSetUp()
+    dataPull()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewDidAppear(false)
+    dataPull()
+    self.collectionView?.reloadData()
   }
   
   // MARK: VC Set Up
@@ -34,6 +42,20 @@ class GoalsCollectionVC: UICollectionViewController {
     navigationItem.backBarButtonItem = backItem
   }
   
+  func dataPull() { // Get data saved on Disk
+    do { goals = try Disk.retrieve("goals.json", from: .documents, as: [Goal].self) }
+    catch let error { print("\(error)") }
+  }
+  
+  
+  // MARK: Segue
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if ( segue.identifier == "goToAddGoalVC" ) {
+      let addGoalVC = segue.destination as! AddGoalVC
+      addGoalVC.delegate = self
+    }
+  }
+  
   // MARK: Button Actions
   @objc func addBtnClicked() {
     performSegue(withIdentifier: "goToAddGoalVC", sender: nil)
@@ -47,13 +69,16 @@ extension GoalsCollectionVC {
   }
   
   override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return 1
+    return goals.count
   }
   
   override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GoalCell", for: indexPath) as! GoalsCollectionViewCell
-    cell.goalTextLabel.text = "Justin Greg"
-    cell.streakCountLabel.text = "500🔥"
+    let goal = goals[indexPath.row]
+    
+    // Set labels
+    cell.goalTextLabel.text = goal.name
+    cell.streakCountLabel.text = "\(goal.getCurrentStreak())" + "🔥"
     
     // Set colors
     cell.layer.borderColor = UIColor.black.cgColor
@@ -78,7 +103,22 @@ extension GoalsCollectionVC: UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
     return CGSize(width: view.frame.width, height: 50)
   }
-  
+  // This function determines the spacing between rows
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+    return 0.0
+  }
+  // This function determines the spacing between items
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    return 0.0
+  }
+}
+
+// MARK: AddGoalDelegate
+extension GoalsCollectionVC: AddGoalDelegate {
+  func didAdd(goal: Goal) {
+    dataPull() // get new goals
+    self.collectionView?.reloadData()
+  }
 }
 
 

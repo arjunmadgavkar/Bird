@@ -177,18 +177,11 @@ class YourDayCollectionVC: UIViewController {
 }
 
 // MARK: - AddBlockDelegate
-extension YourDayCollectionVC : AddBlockDelegate {
-  func didUpdate(timeBlock: TimeBlock, newTimeBlocks: [TimeBlock]) {
-    timeBlocks = newTimeBlocks // Update the array of timeBlocks
-    let userDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.startDate) // Get the newly added date
-    if ( userDate.month == today.month && userDate.day == today.day && userDate.year == today.year ) { // Compare with today's date
-      currentDateBlocks.append(timeBlock)
-      currentDateBlocks.sort { (t1, t2) -> Bool in
-        if ( t1.startDate < t2.startDate ) { return true }
-        return false
-      }
-      self.timeBlockCollectionView?.reloadData() // Update VC
-    }
+extension YourDayCollectionVC: AddBlockDelegate {
+  func didUpdate(timeBlock: TimeBlock) {
+    currentDateBlocks.removeAll() // clear current date blocks
+    getBlocksFromDisk() // get new blocks + current date blocks
+    self.timeBlockCollectionView?.reloadData() // Update VC
   }
 }
 
@@ -235,7 +228,7 @@ extension YourDayCollectionVC: UICollectionViewDataSource {
       startTimeMorning = true
       startTimePM = false
     } else if ( startHour >= 12 ) { // afternoon and evening
-      startHour = startHour - 12
+      if ( startHour != 12 ) { startHour = startHour - 12 } // don't subtract 12 if it's noon
       startTimeMorning = false
       startTimePM = true
     }
@@ -248,7 +241,7 @@ extension YourDayCollectionVC: UICollectionViewDataSource {
       endTimeMorning = true
       endTimePM = false
     } else if ( endHour >= 12 ) { // afternoon and evening
-      endHour = endHour - 12
+      if ( endHour != 12 ) { endHour = endHour - 12 } // don't subtract 12 if it's noon
       endTimeMorning = false
       endTimePM = true
     }
@@ -309,7 +302,7 @@ extension YourDayCollectionVC : UICollectionViewDelegateFlowLayout {
   }
   // This function determines the spacing between items
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-    return 2.0
+    return 0.0
   }
   
 }

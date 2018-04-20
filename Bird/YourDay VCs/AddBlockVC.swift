@@ -14,11 +14,11 @@ import ColorPickerRow
 class AddBlockVC: FormViewController {
   // Create the delegate here, but set it in YourDayVC
   weak var addBlockDelegate : AddBlockDelegate?
-  var category, catColor : String?
   var shouldPickColor = true
   var timeChanged = false
   var timeBlocks = [TimeBlock]()
   var categories = [Category]()
+  var goals = [Goal]()
   var namesOfCategories = [String]()
   var categoriesWithColors = [String]()
   var namesOfColors = [String]()
@@ -39,6 +39,8 @@ class AddBlockVC: FormViewController {
     do { categories = try Disk.retrieve("categories.json", from: .documents, as: [Category].self) }
     catch let error { print("\(error)") }
     do { activities = try Disk.retrieve("activities.json", from: .documents, as: [String].self) }
+    catch let error { print("\(error)") }
+    do { goals = try Disk.retrieve("goals.json", from: .documents, as: [Goal].self) }
     catch let error { print("\(error)") }
     
     for cat in categories {
@@ -93,7 +95,6 @@ class AddBlockVC: FormViewController {
       cell.textLabel?.font = AvenirNext(size: 17.0)
     }
     DateRow.defaultCellSetup = { cell, row in
-      cell.datePicker.minuteInterval = 15
       cell.textLabel?.font = AvenirNext(size: 17.0)
     }
     ButtonRow.defaultCellSetup = {cell, row in
@@ -164,7 +165,7 @@ class AddBlockVC: FormViewController {
       <<< DateRow(){ row in
         row.title = "Date"
         row.tag = "date"
-        let today = Date()
+        row.maximumDate = today
         row.value = today
       }
       // Data
@@ -210,7 +211,7 @@ class AddBlockVC: FormViewController {
     // Form properties
     var color : UIColor?
     var flow, unpleasant : Bool?
-    var activity, accomplishments, learnings : String?
+    var category, catColor, activity, accomplishments, learnings: String?
     var quality : Int?
     // Date properties
     let calendar = Calendar.current
@@ -298,10 +299,6 @@ class AddBlockVC: FormViewController {
         counter+=1
       }
       
-      // Add to array and save to Disk
-      timeBlocks.append(timeBlock)
-      
-      
       // Handle activities
       var addActivity = true
       for a in activities {
@@ -310,6 +307,7 @@ class AddBlockVC: FormViewController {
         }
       }
       
+      // Save category + activity
       if ( addCategory ) {
         categories.append(newCategory)
         categories.sort(by: { (c1, c2) -> Bool in
@@ -324,10 +322,48 @@ class AddBlockVC: FormViewController {
         catch let error { print("\(error)") }
       }
       
+      // Check to see if this counts towards a goal
+      var goalToUpdate: Goal!
+      var goalCount = false
+      for goal in goals {
+        if ( goal.name == category ) {
+          goalCount = true
+          goalToUpdate = goal
+          break
+        }
+        if ( goal.name == activity ) {
+          goalCount = true
+          goalToUpdate = goal
+          break
+        }
+      }
+      if ( goalCount ) {
+        let amountCompleted = Double((endDate?.timeIntervalSince(startDate!))!) // get duration of timeBlock in seconds
+        if ( amountCompleted >= goalToUpdate.timePerDay ) { // check whether user has completed required amount
+          goalToUpdate.incrementCompletions(dateCompleted: startDate!)
+          goalToUpdate.setCurrentStreak()
+          print("ARJUN: current streak - \(goalToUpdate.getCurrentStreak())")
+          goalToUpdate.checkLongestStreak()
+          goalToUpdate.updatePercentageOfDaysAccomplished()
+        } else { // partially complete
+          if ( goalToUpdate.getPartiallyComplete() ) { // already started
+            goalToUpdate.checkGoalCompleted(newDate: startDate!, amountCompleted: amountCompleted)
+          } else {
+            goalToUpdate.goalPartiallyComplete(startingDate: startDate!, amountCompleted: amountCompleted)
+          }
+        }
+        do { try Disk.save(goals, to: .documents, as: "goals.json") } // update goals
+        catch let error { print("\(error)") }
+      }
+      
+      timeBlocks.append(timeBlock) // add to timeBlocks array
+      timeBlocks.sort(by: { (t1, t2) -> Bool in // sort timeBlocks array
+        return t1.startDate < t2.startDate
+      })
+      
       do {
-        try Disk.save(timeBlocks, to: .documents, as: "timeBlocks.json")
-        // Tell YourDayCollectionVC that something changed, so YourDay can update its view
-        addBlockDelegate?.didUpdate(timeBlock: timeBlock, newTimeBlocks: timeBlocks)
+        try Disk.save(timeBlocks, to: .documents, as: "timeBlocks.json") // Save the new timeBlocks
+        addBlockDelegate?.didUpdate(timeBlock: timeBlock) // Tell YourDayCollectionVC "something changed, update yourself"
       }
       catch let error { print("\(error)") }
     } else {

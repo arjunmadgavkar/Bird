@@ -9,5 +9,5 @@
 import Foundation
 
 // Create the AddBlockDelegate, which will be used to communicate between AddBlockVC and YourDayVC
-protocol AddBlockDelegate : class { func didUpdate(timeBlock: TimeBlock, newTimeBlocks: [TimeBlock]) }
-//protocol EditBlockDelegate : class { func didEdit(timeBlock: TimeBlock, newTimeBlocks: [TimeBlock]) }
+protocol AddBlockDelegate : class { func didUpdate(timeBlock: TimeBlock) }
+protocol AddGoalDelegate : class { func didAdd(goal: Goal) }
