@@ -341,10 +341,6 @@ class AddBlockVC: FormViewController {
         let amountCompleted = Double((endDate?.timeIntervalSince(startDate!))!) // get duration of timeBlock in seconds
         if ( amountCompleted >= goalToUpdate.timePerDay ) { // check whether user has completed required amount
           goalToUpdate.incrementCompletions(dateCompleted: startDate!)
-          goalToUpdate.setCurrentStreak()
-          print("ARJUN: current streak - \(goalToUpdate.getCurrentStreak())")
-          goalToUpdate.checkLongestStreak()
-          goalToUpdate.updatePercentageOfDaysAccomplished()
         } else { // partially complete
           if ( goalToUpdate.getPartiallyComplete() ) { // already started
             goalToUpdate.checkGoalCompleted(newDate: startDate!, amountCompleted: amountCompleted)

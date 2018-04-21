@@ -41,6 +41,9 @@
 		DCB8704620881C9800EECF06 /* GoalsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB8704520881C9800EECF06 /* GoalsCollectionViewCell.swift */; };
 		DCB87048208821B900EECF06 /* AddGoalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB87047208821B900EECF06 /* AddGoalVC.swift */; };
 		DCB8704A2088246E00EECF06 /* Goal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB870492088246E00EECF06 /* Goal.swift */; };
+		DCB98629208B77DF00FDD0EC /* GoalDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB98628208B77DF00FDD0EC /* GoalDetailVC.swift */; };
+		DCB9862B208B861100FDD0EC /* EditGoalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB9862A208B861100FDD0EC /* EditGoalVC.swift */; };
+		DCB9862D208B8F6300FDD0EC /* Data.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCB9862C208B8F6300FDD0EC /* Data.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +108,9 @@
 		DCB8704520881C9800EECF06 /* GoalsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsCollectionViewCell.swift; sourceTree = "<group>"; };
 		DCB87047208821B900EECF06 /* AddGoalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGoalVC.swift; sourceTree = "<group>"; };
 		DCB870492088246E00EECF06 /* Goal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goal.swift; sourceTree = "<group>"; };
+		DCB98628208B77DF00FDD0EC /* GoalDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalDetailVC.swift; sourceTree = "<group>"; };
+		DCB9862A208B861100FDD0EC /* EditGoalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGoalVC.swift; sourceTree = "<group>"; };
+		DCB9862C208B8F6300FDD0EC /* Data.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Data.storyboard; sourceTree = "<group>"; };
 		DEE72A3716C569CC96EEED12 /* Pods_BirdUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BirdUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDEEC97BE7CEEC23EEFB7AA2 /* Pods_Bird.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bird.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -258,6 +264,7 @@
 				DC1AC121206D3F090015A7A8 /* YourDay.storyboard */,
 				DCB8704020881A7100EECF06 /* Goals.storyboard */,
 				DC1AC0FC206D3E7B0015A7A8 /* LaunchScreen.storyboard */,
+				DCB9862C208B8F6300FDD0EC /* Data.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -289,6 +296,8 @@
 			children = (
 				DCB8704220881B1400EECF06 /* GoalsCollectionVC.swift */,
 				DCB87047208821B900EECF06 /* AddGoalVC.swift */,
+				DCB98628208B77DF00FDD0EC /* GoalDetailVC.swift */,
+				DCB9862A208B861100FDD0EC /* EditGoalVC.swift */,
 			);
 			path = "Goals VCs";
 			sourceTree = "<group>";
@@ -404,6 +413,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCB9862D208B8F6300FDD0EC /* Data.storyboard in Resources */,
 				DCB8704120881A7100EECF06 /* Goals.storyboard in Resources */,
 				DC1AC0FE206D3E7B0015A7A8 /* LaunchScreen.storyboard in Resources */,
 				DC1AC0FB206D3E7B0015A7A8 /* Assets.xcassets in Resources */,
@@ -530,12 +540,14 @@
 				DC038D182076480300E939AB /* Protocols.swift in Sources */,
 				DCB87048208821B900EECF06 /* AddGoalVC.swift in Sources */,
 				DC59F3ED206D42E50049722A /* Utilities + Extensions.swift in Sources */,
+				DCB98629208B77DF00FDD0EC /* GoalDetailVC.swift in Sources */,
 				DC2D7AAD207FB3CB00D791D1 /* TimeBlockDetailVC.swift in Sources */,
 				DC6E55BE20863932009AC151 /* SuggestionTableViewCell.swift in Sources */,
 				DCB8704A2088246E00EECF06 /* Goal.swift in Sources */,
 				DC6E55BB20863932009AC151 /* String+SuggestionValue.swift in Sources */,
 				DC6E55BD20863932009AC151 /* SuggestionCollectionViewCell.swift in Sources */,
 				DC1AC0F2206D3E7B0015A7A8 /* AppDelegate.swift in Sources */,
+				DCB9862B208B861100FDD0EC /* EditGoalVC.swift in Sources */,
 				DC038D2A2076B13E00E939AB /* Category.swift in Sources */,
 				DC038D482077E30800E939AB /* YourDayCollectionViewCell.swift in Sources */,
 				DCB8704320881B1400EECF06 /* GoalsCollectionVC.swift in Sources */,

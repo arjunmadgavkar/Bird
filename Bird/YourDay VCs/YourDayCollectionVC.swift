@@ -270,10 +270,7 @@ extension YourDayCollectionVC: UICollectionViewDataSource {
   
 }
 extension YourDayCollectionVC : UICollectionViewDelegate {
-  
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    // Handled in the segue...
-  }
+  // Don't need anything
   
 }
 

@@ -50,11 +50,17 @@ class Goal: Codable {
     let cal = Calendar.current
     var streak = 1
     
+    if ( datesCompleted.count == 0 ) {
+      self.currentStreak = 0
+      return
+    }
+    
     if ( datesCompleted.count > 1 ) {
       if ( Date().days(from: datesCompleted[0]) > 1 ) { // if today's date is more than 1 away from the most recent completion
         self.currentStreak = 0
         return
       }
+      
       var counter = 0
       while ( counter < datesCompleted.count-1 ) {
         // Get days to compare
@@ -92,19 +98,34 @@ class Goal: Codable {
     return self.currentStreak
   }
   
-  func updatePercentageOfDaysAccomplished() {
-    let numberOfDaysSinceCreation = Double(Date().timeIntervalSince(dateStarted)) / secondsInADay()
-    self.percentageComplete = Double(self.numberOfCompletions) / numberOfDaysSinceCreation
+  func getNumberOfCompletions() -> Int {
+    return self.numberOfCompletions
   }
   
-  func getPercentageOfDaysAccomplished() -> Double {
-    return self.percentageComplete
+  func getPercentageComplete() -> Double {
+    let numberOfDaysSinceCreation = Double(Date().days(from: dateStarted)) // number of days since goal was created
+    if ( numberOfDaysSinceCreation < 1 ) { // if it was created today
+      if ( self.numberOfCompletions > 1 ) { // user created the goal today, but is adding information from days prior
+        let datesAdded = self.datesCompleted.count
+        let trueStartDate = Date().days(from: datesCompleted[datesAdded-1]) + 1 // first date entered
+        let perc = Double(self.numberOfCompletions)/Double(trueStartDate)
+        return (perc*100)
+      }
+      let percentage = Double(self.numberOfCompletions/1)
+      return (percentage * 100)
+    }
+    self.percentageComplete = Double(self.numberOfCompletions) / numberOfDaysSinceCreation // percentage
+    return self.percentageComplete * 100
   }
   
   func checkLongestStreak() {
     if ( self.currentStreak > self.longestStreak ) {
       self.longestStreak = self.currentStreak
     }
+  }
+  
+  func getLongestStreak() -> Int {
+    return self.longestStreak
   }
   
   func goalPartiallyComplete(startingDate: Date, amountCompleted: Double) {

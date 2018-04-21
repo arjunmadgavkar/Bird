@@ -44,13 +44,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     do { goals = try Disk.retrieve("goals.json", from: .documents, as: [Goal].self) }
     catch let error { print("\(error)") }
     
-    if ( goals.count > 0 ) {
-      for goal in goals {
-        goal.setCurrentStreak()
-      }
-    }
-    
-    
     
     var addCategories = false
     if ( categories.count == 0 ) {

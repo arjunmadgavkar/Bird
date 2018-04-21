@@ -15,11 +15,11 @@ class GoalsCollectionVC: UICollectionViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     viewControllerSetUp()
-    dataPull()
+    //dataPull()
   }
   
   override func viewWillAppear(_ animated: Bool) {
-    super.viewDidAppear(false)
+    super.viewWillAppear(false)
     dataPull()
     self.collectionView?.reloadData()
   }
@@ -43,8 +43,19 @@ class GoalsCollectionVC: UICollectionViewController {
   }
   
   func dataPull() { // Get data saved on Disk
-    do { goals = try Disk.retrieve("goals.json", from: .documents, as: [Goal].self) }
+    do {
+      goals = try Disk.retrieve("goals.json", from: .documents, as: [Goal].self)
+      for goal in goals {
+        goal.setCurrentStreak()
+        goal.checkLongestStreak()
+      }
+    }
     catch let error { print("\(error)") }
+  }
+  
+  func didEdit() {
+    dataPull()
+    self.collectionView?.reloadData()
   }
   
   
@@ -53,6 +64,22 @@ class GoalsCollectionVC: UICollectionViewController {
     if ( segue.identifier == "goToAddGoalVC" ) {
       let addGoalVC = segue.destination as! AddGoalVC
       addGoalVC.delegate = self
+    }
+    if ( segue.identifier == "goToGoalDetailVC" ) {
+      if let cell = sender as? UICollectionViewCell, // get the cell that was the sender
+        let indexPath = self.collectionView?.indexPath(for: cell) { // from that cell get the indexPath
+        let backItem = UIBarButtonItem()
+        backItem.title = ""
+        navigationItem.backBarButtonItem = backItem
+        let vc = segue.destination as! GoalDetailVC
+        vc.goal = goals[indexPath.row]
+      }
+    }
+  }
+  
+  @IBAction func unwindToGoalsVC(segue: UIStoryboardSegue) {
+    if let _ = segue.source as? EditGoalVC {
+      didEdit()
     }
   }
   
