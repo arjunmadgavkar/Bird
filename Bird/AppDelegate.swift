@@ -26,6 +26,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     Remove everything --
      do { try Disk.remove("timeBlocks.json", from: .documents) }
      catch let error { print("\(error)") }
+     do { try Disk.remove("earliestTimeBlock.json", from: .documents) }
+     catch let error { print("\(error)") }
      do { try Disk.remove("categories.json", from: .documents) }
      catch let error { print("\(error)") }
      do { try Disk.remove("activities.json", from: .documents) }
@@ -35,8 +37,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      
      */
     
+    // Retrieve data
     do { timeBlocks = try Disk.retrieve("timeBlocks.json", from: .documents, as: [TimeBlock].self) }
     catch let error { print("\(error)") }
+    do {
+      var timeBlock: TimeBlock?
+      timeBlock = try Disk.retrieve("earliestTimeBlock.json", from: .documents, as: TimeBlock.self)
+      TimeBlock.setEarliestTimeBlock(timeBlock: timeBlock!)
+    } catch let error {
+      print("\(error)")
+    }
     do { categories = try Disk.retrieve("categories.json", from: .documents, as: [Category].self) }
     catch let error { print("\(error)") }
     do { activities = try Disk.retrieve("activities.json", from: .documents, as: [String].self) }
@@ -47,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var addCategories = false
     if ( categories.count == 0 ) {
-      let namesOfCategories = ["Commute", "Deep Work", "Exercise", "Family", "Learning", "Meditation", "Mindfulness", "Morning Routine", "Relax", "Sleep", "Social", "Waste", "Work"]
+      let namesOfCategories = ["Commute", "Deep Work", "Exercise", "Family", "Learning", "Mindfulness", "Morning Routine", "Relax", "Sleep", "Social", "Waste", "Work"]
       var i = 0;
       while (i < 11) {
         categories.append(Category(name: namesOfCategories[i]))

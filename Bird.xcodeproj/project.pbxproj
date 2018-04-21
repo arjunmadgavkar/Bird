@@ -44,6 +44,7 @@
 		DCB98629208B77DF00FDD0EC /* GoalDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB98628208B77DF00FDD0EC /* GoalDetailVC.swift */; };
 		DCB9862B208B861100FDD0EC /* EditGoalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB9862A208B861100FDD0EC /* EditGoalVC.swift */; };
 		DCB9862D208B8F6300FDD0EC /* Data.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCB9862C208B8F6300FDD0EC /* Data.storyboard */; };
+		DCDF26C4208B92B4000263A5 /* DataVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDF26C3208B92B4000263A5 /* DataVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +112,7 @@
 		DCB98628208B77DF00FDD0EC /* GoalDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalDetailVC.swift; sourceTree = "<group>"; };
 		DCB9862A208B861100FDD0EC /* EditGoalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGoalVC.swift; sourceTree = "<group>"; };
 		DCB9862C208B8F6300FDD0EC /* Data.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Data.storyboard; sourceTree = "<group>"; };
+		DCDF26C3208B92B4000263A5 /* DataVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataVC.swift; sourceTree = "<group>"; };
 		DEE72A3716C569CC96EEED12 /* Pods_BirdUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BirdUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDEEC97BE7CEEC23EEFB7AA2 /* Pods_Bird.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bird.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -232,6 +234,7 @@
 				DC038D462077E2D300E939AB /* Views */,
 				DC1AC128206D40100015A7A8 /* YourDay VCs */,
 				DCB8704420881B1A00EECF06 /* Goals VCs */,
+				DCDF26C2208B929C000263A5 /* Data VCs */,
 				DC1AC123206D3F1D0015A7A8 /* Storyboards */,
 				DC1AC0FA206D3E7B0015A7A8 /* Assets.xcassets */,
 				DC1AC0FF206D3E7B0015A7A8 /* Info.plist */,
@@ -260,10 +263,10 @@
 		DC1AC123206D3F1D0015A7A8 /* Storyboards */ = {
 			isa = PBXGroup;
 			children = (
+				DC1AC0FC206D3E7B0015A7A8 /* LaunchScreen.storyboard */,
 				DC1AC0F7206D3E7B0015A7A8 /* Main.storyboard */,
 				DC1AC121206D3F090015A7A8 /* YourDay.storyboard */,
 				DCB8704020881A7100EECF06 /* Goals.storyboard */,
-				DC1AC0FC206D3E7B0015A7A8 /* LaunchScreen.storyboard */,
 				DCB9862C208B8F6300FDD0EC /* Data.storyboard */,
 			);
 			path = Storyboards;
@@ -300,6 +303,14 @@
 				DCB9862A208B861100FDD0EC /* EditGoalVC.swift */,
 			);
 			path = "Goals VCs";
+			sourceTree = "<group>";
+		};
+		DCDF26C2208B929C000263A5 /* Data VCs */ = {
+			isa = PBXGroup;
+			children = (
+				DCDF26C3208B92B4000263A5 /* DataVC.swift */,
+			);
+			path = "Data VCs";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -464,6 +475,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Bird/Pods-Bird-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Charts/Charts.framework",
 				"${BUILT_PRODUCTS_DIR}/ColorPickerRow/ColorPickerRow.framework",
 				"${BUILT_PRODUCTS_DIR}/Disk/Disk.framework",
 				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
@@ -472,6 +484,7 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Charts.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ColorPickerRow.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Disk.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
@@ -530,6 +543,7 @@
 				DC2D7AAF207FB3EA00D791D1 /* EditTimeBlockVC.swift in Sources */,
 				DC2D7AA9207A77E100D791D1 /* CalendarCell.swift in Sources */,
 				DC6E55BF20863932009AC151 /* SuggestionCell.swift in Sources */,
+				DCDF26C4208B92B4000263A5 /* DataVC.swift in Sources */,
 				DC6E55C120863932009AC151 /* SuggestionTableCell.swift in Sources */,
 				DC48086D20753F230042E1A5 /* TimeBlock.swift in Sources */,
 				DC6E55C020863932009AC151 /* SuggestionCollectionCell.swift in Sources */,

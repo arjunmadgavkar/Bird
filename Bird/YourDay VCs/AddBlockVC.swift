@@ -260,6 +260,8 @@ class AddBlockVC: FormViewController {
     
     let startDate = calendar.date(from: startDateComponents)
     let endDate = calendar.date(from: endDateComponents)
+    let duration = endDate?.minutes(from: startDate!)
+    let hoursToAdd = Double(duration!/60)
     
     if ( category != nil && activity != nil && quality != nil && !shouldPickColor ) {
       // Get length of time
@@ -267,37 +269,23 @@ class AddBlockVC: FormViewController {
       
       // Handle category
       var categoryCounter = 0
-      var addCategory = false
+      var catty: Category?
       for cat in categories {
         if ( cat.name == category! ) {
+          catty = cat
           if ( cat.color == "tempColor") {
-            // Remove
-            categories.remove(at: categoryCounter)
-            addCategory = true
-            // Set new color
-            catColor = (color?.toHex())!
+            catColor = (color?.toHex())! // get the new color since it was temporary before
+            catty?.color = catColor! // set the color
+            catty?.addToTotalHours(hoursToAdd: hoursToAdd)
           } else {
-            catColor = cat.color
+            catColor = catty?.getColor() // use the already set color
+            catty?.addToTotalHours(hoursToAdd: hoursToAdd)
           }
         }
         categoryCounter+=1
       }
-      
-      let newCategory = Category(name: category!, color: catColor!)
-      
-      // Create timeBlock
-      let timeBlock = TimeBlock(category : newCategory, activity : activity!, startDate : startDate!, endDate : endDate!, lengthOfTime : lengthOfTime!, quality : quality!, flow : flow!, unpleasantFeelings : unpleasant!, accomplishments : accomplishments!, learnings : learnings!)
-     
-      // Check to see if the time block already exists
-      var counter = 0
-      for existingBlock in timeBlocks {
-        if ( existingBlock.startDate == startDate || existingBlock.endDate == endDate ) {
-          self.showAlert(withTitle: "Overwriting", message: "You are overwriting information that exists during this time block.")
-          timeBlocks.remove(at: counter)
-          break
-        }
-        counter+=1
-      }
+    
+      //let newCategory = Category(name: category!, color: catColor!)
       
       // Handle activities
       var addActivity = true
@@ -307,19 +295,32 @@ class AddBlockVC: FormViewController {
         }
       }
       
-      // Save category + activity
-      if ( addCategory ) {
-        categories.append(newCategory)
-        categories.sort(by: { (c1, c2) -> Bool in
-          return c1.name < c2.name
-        })
-        do { try Disk.save(categories, to: .documents, as: "categories.json") }
-        catch let error { print("\(error)") }
-      }
-      if ( addActivity ) {
+//      cat = Category(name: category!, color: catColor!, duration: 2.0)
+//      categories.append(cat!)
+//      categories.sort(by: { (c1, c2) -> Bool in
+//        return c1.name < c2.name
+//      })
+      do { try Disk.save(categories, to: .documents, as: "categories.json") }
+      catch let error { print("\(error)") }
+      
+      if ( addActivity ) { // this is a new activity, so save it
         activities.append(activity!)
         do { try Disk.save(activities, to: .documents, as: "activities.json") }
         catch let error { print("\(error)") }
+      }
+      
+      // Create timeBlock
+      let timeBlock = TimeBlock(category : catty!, activity : activity!, startDate : startDate!, endDate : endDate!, lengthOfTime : lengthOfTime!, quality : quality!, flow : flow!, unpleasantFeelings : unpleasant!, accomplishments : accomplishments!, learnings : learnings!)
+      
+      // Check to see if the time block already exists
+      var counter = 0
+      for existingBlock in timeBlocks {
+        if ( existingBlock.startDate == startDate || existingBlock.endDate == endDate ) {
+          self.showAlert(withTitle: "Overwriting", message: "You are overwriting information that exists during this time block.")
+          timeBlocks.remove(at: counter)
+          break
+        }
+        counter+=1
       }
       
       // Check to see if this counts towards a goal
@@ -353,10 +354,20 @@ class AddBlockVC: FormViewController {
       }
       
       timeBlocks.append(timeBlock) // add to timeBlocks array
-      timeBlocks.sort(by: { (t1, t2) -> Bool in // sort timeBlocks array
+      if ( timeBlock.isEarliestTimeBlock() ) { // if it's the earliest timeBlock, then set it
+        TimeBlock.setEarliestTimeBlock(timeBlock: timeBlock)
+        do { try Disk.save(timeBlock, to: .documents, as: "earliestTimeBlock.json") } // try to save to array
+        catch let error { print(error) }
+      }
+      
+      /*
+       
+      Sort time block array --
+      timeBlocks.sort(by: { (t1, t2) -> Bool in
         return t1.startDate < t2.startDate
       })
-      
+       
+      */
       do {
         try Disk.save(timeBlocks, to: .documents, as: "timeBlocks.json") // Save the new timeBlocks
         addBlockDelegate?.didUpdate(timeBlock: timeBlock) // Tell YourDayCollectionVC "something changed, update yourself"

@@ -260,7 +260,7 @@ extension YourDayCollectionVC: UICollectionViewDataSource {
     timeCell.timeLabel.text = startTime + "-" + endTime + ":"
     
     // Set colors
-    timeCell.backgroundColor = UIColor(hex: timeBlock.category.color)
+    timeCell.backgroundColor = UIColor(hex: timeBlock.category.getColor())
     timeCell.layer.borderColor = UIColor.black.cgColor
     timeCell.layer.borderWidth = 2
     

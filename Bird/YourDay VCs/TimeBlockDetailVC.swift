@@ -56,7 +56,7 @@ class TimeBlockDetailVC: UIViewController {
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     let navVC = segue.destination as! UINavigationController
     let editVC = navVC.topViewController as! EditTimeBlockVC
-    editVC.timeBlock = timeBlock!
+    editVC.timeBlock = timeBlock! // editVC's timeBlock has a reference to the OG timeBlock
   }
   
   

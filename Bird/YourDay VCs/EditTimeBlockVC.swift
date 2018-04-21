@@ -213,41 +213,22 @@ class EditTimeBlockVC: FormViewController {
     
     let startDate = userCalendar.date(from: startDateComponents)
     let endDate = userCalendar.date(from: endDateComponents)
+    let newDuration = endDate?.minutes(from: startDate!)
+    let newHoursToAdd = Double(newDuration!/60)
     
     if ( category != nil && activity != nil && quality != nil && !shouldPickColor ) {
       let lengthOfTime = endDate?.minutes(from: startDate!)
-      var categoryCounter = 0
-      var addCategory = false
-      for cat in categories { // Handle category
-        if ( cat.name == category! ) {
-          if ( cat.color == "tempColor") {
-            categories.remove(at: categoryCounter) // Remove
-            addCategory = true
-            catColor = (color?.toHex())! // Set new color
-          } else {
-            catColor = cat.color
-          }
-        }
-        categoryCounter+=1
+      // Handle category
+      let catty = timeBlock.category
+      if ( startDate != timeBlock.startDate || endDate != timeBlock.endDate ) { // if the duration is different
+        let oldDuration = timeBlock.endDate.minutes(from: timeBlock.startDate)
+        let oldHoursToAdd = Double(oldDuration/60)
+        let difference = Double(newHoursToAdd-oldHoursToAdd)
+        catty.addToTotalHours(hoursToAdd: difference)
       }
-      
-      let newCategory = Category(name: category!, color: catColor!)
-      
-      // Create timeBlock
-      let timeBlock = TimeBlock(category : newCategory, activity : activity!, startDate : startDate!, endDate : endDate!, lengthOfTime : lengthOfTime!, quality : quality!, flow : flow!, unpleasantFeelings : unpleasant!, accomplishments : accomplishments!, learnings : learnings!)
-      
-      // Check to see if the time block already exists
-      var counter = 0
-      for existingBlock in timeBlocks {
-        if ( existingBlock.startDate == startDate || existingBlock.endDate == endDate ) {
-          timeBlocks.remove(at: counter)
-          break
-        }
-        counter+=1
-      }
-      
-      // Add to array and save to Disk
-      timeBlocks.append(timeBlock)
+      catColor = (color?.toHex())!
+      catty.setColor(color: catColor!) // set the color
+
       
       // Handle activities
       var addActivity = true
@@ -256,27 +237,42 @@ class EditTimeBlockVC: FormViewController {
           addActivity = false
         }
       }
+
+      do { try Disk.save(categories, to: .documents, as: "categories.json") }
+      catch let error { print("\(error)") }
       
-      if ( addCategory ) {
-        categories.append(newCategory)
-        categories.sort(by: { (c1, c2) -> Bool in
-          return c1.name < c2.name
-        })
-        do { try Disk.save(categories, to: .documents, as: "categories.json") }
-        catch let error { print("\(error)") }
-      }
       if ( addActivity ) {
         activities.append(activity!)
         do { try Disk.save(activities, to: .documents, as: "activities.json") }
         catch let error { print("\(error)") }
       }
       
-      do {
-        try Disk.save(timeBlocks, to: .documents, as: "timeBlocks.json")
-        // Tell YourDayCollectionVC that something changed, so YourDay can update its view
-        //addBlockDelegate?.didUpdate(timeBlock: timeBlock, newTimeBlocks: timeBlocks)
+      var counter = 0
+      for oldBlock in timeBlocks {
+        if ( oldBlock.startDate == timeBlock.startDate ) { // remove the old timeBlock so we can add the edited one
+          timeBlocks.remove(at: counter)
+          break
+        }
+        counter += 1
       }
+      
+      // Edit timeBlock
+      timeBlock.category = catty
+      timeBlock.activity = activity!
+      timeBlock.startDate = startDate!
+      timeBlock.endDate = endDate!
+      timeBlock.lengthOfTime = lengthOfTime!
+      timeBlock.quality = quality!
+      timeBlock.flow = flow!
+      timeBlock.unpleasantFeelings = unpleasant!
+      timeBlock.accomplishments = accomplishments!
+      timeBlock.learnings = learnings!
+      // add it back to the array
+      timeBlocks.append(timeBlock)
+      
+      do { try Disk.save(timeBlocks, to: .documents, as: "timeBlocks.json") }
       catch let error { print("\(error)") }
+      
     } else {
       if ( category == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the category.") }
       else if ( activity == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the activity.") }

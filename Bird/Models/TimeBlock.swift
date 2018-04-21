@@ -6,22 +6,35 @@
 //  Copyright © 2018 Arjun Madgavkar. All rights reserved.
 //
 import UIKit
+import Disk
 import Eureka
 import Foundation
 
-class TimeBlock : Codable {
-  let category : Category
-  let activity : String
-  let startDate : Date
-  let endDate : Date
-  let lengthOfTime : Int
-  let quality : Int
-  let flow : Bool
-  let unpleasantFeelings : Bool
-  let accomplishments : String
-  let learnings : String
+class TimeBlock: Codable {
+  // Type properties
+  static var earliestTimeBlock: TimeBlock?
+  // Instance properties
+  var category: Category
+  var activity: String
+  var startDate: Date
+  var endDate: Date
+  var lengthOfTime: Int
+  var quality: Int
+  var flow: Bool
+  var unpleasantFeelings: Bool
+  var accomplishments: String
+  var learnings: String
   
-  init(category : Category, activity : String, startDate : Date, endDate : Date, lengthOfTime : Int, quality : Int, flow : Bool, unpleasantFeelings : Bool, accomplishments : String, learnings : String) {
+  // Type Methods
+  class func getEarliestTimeBlock() -> TimeBlock {
+    return self.earliestTimeBlock!
+  }
+  class func setEarliestTimeBlock(timeBlock: TimeBlock) {
+    self.earliestTimeBlock = timeBlock
+  }
+  
+  // Instance Methods
+  init(category: Category, activity: String, startDate: Date, endDate: Date, lengthOfTime: Int, quality: Int, flow: Bool, unpleasantFeelings: Bool, accomplishments: String, learnings: String) {
     self.category = category
     self.activity = activity
     self.startDate = startDate
@@ -33,6 +46,23 @@ class TimeBlock : Codable {
     self.accomplishments = accomplishments
     self.learnings = learnings
   }
+  
+  func isEarliestTimeBlock() -> Bool {
+    if ( TimeBlock.earliestTimeBlock == nil ) {
+      TimeBlock.setEarliestTimeBlock(timeBlock: self)
+    } else {
+      let currentEarliestTimeBlock = TimeBlock.getEarliestTimeBlock()
+      if ( (currentEarliestTimeBlock.startDate) < self.startDate ) {
+        return false
+      }
+    }
+    return true
+  }
+  
+  
+  
+  
+  
 
   
   
