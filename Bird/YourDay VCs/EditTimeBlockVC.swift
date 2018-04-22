@@ -14,14 +14,15 @@ import ColorPickerRow
 class EditTimeBlockVC: FormViewController {
   let today = Date()
   let userCalendar = Calendar.current
-  var category, catColor : String?
+  var catColor : String?
   var timeBlock: TimeBlock!
   var timeBlocks = [TimeBlock]()
   var categories = [Category]()
   var namesOfCategories = [String]()
+  var namesOfActivities = [String]()
   var categoriesWithColors = [String]()
   var namesOfColors = [String]()
-  var activities = [String]()
+  var activities = [Activity]()
   var shouldPickColor = true
   
   override func viewDidLoad() {
@@ -37,7 +38,7 @@ class EditTimeBlockVC: FormViewController {
     catch let error { print("\(error)") }
     do { categories = try Disk.retrieve("categories.json", from: .documents, as: [Category].self) }
     catch let error { print("\(error)") }
-    do { activities = try Disk.retrieve("activities.json", from: .documents, as: [String].self) }
+    do { activities = try Disk.retrieve("activities.json", from: .documents, as: [Activity].self) }
     catch let error { print("\(error)") }
     
     for cat in categories {
@@ -47,6 +48,10 @@ class EditTimeBlockVC: FormViewController {
         categoriesWithColors.append(cat.name)
       }
     }
+    for act in activities {
+      namesOfActivities.append(act.name)
+    }
+    
   }
   
   func setUpForm() {
@@ -101,9 +106,9 @@ class EditTimeBlockVC: FormViewController {
       }
       <<< SuggestionAccessoryRow<String>() {
         $0.filterFunction = { text in
-          self.activities.filter({ $0.hasPrefix(text) })
+          self.namesOfActivities.filter({ $0.hasPrefix(text) })
         }
-        $0.value = timeBlock.activity
+        $0.value = timeBlock.activity.name
         $0.title = "Activity"
         $0.tag = "activity"
       }
@@ -166,7 +171,7 @@ class EditTimeBlockVC: FormViewController {
     // Form properties
     var color : UIColor?
     var flow, unpleasant : Bool?
-    var activity, accomplishments, learnings : String?
+    var categoryString, activityString, accomplishments, learnings : String?
     var quality : Int?
     // Date properties
     var startDateComponents = DateComponents()
@@ -174,8 +179,8 @@ class EditTimeBlockVC: FormViewController {
     
     // Get form values
     let formValues = self.form.values()
-    if ( formValues["category"] != nil ) { category = formValues["category"] as? String }
-    if ( formValues["activity"] != nil ) { activity = formValues["activity"] as? String }
+    if ( formValues["category"] != nil ) { categoryString = formValues["category"] as? String }
+    if ( formValues["activity"] != nil ) { activityString = formValues["activity"] as? String }
     if ( formValues["color"] != nil ) {
       color = formValues["color"] as? UIColor
       shouldPickColor = false
@@ -216,36 +221,54 @@ class EditTimeBlockVC: FormViewController {
     let newDuration = endDate?.minutes(from: startDate!)
     let newHoursToAdd = Double(newDuration!/60)
     
-    if ( category != nil && activity != nil && quality != nil && !shouldPickColor ) {
+    if ( categoryString != nil && activityString != nil && quality != nil && !shouldPickColor ) {
       let lengthOfTime = endDate?.minutes(from: startDate!)
       // Handle category
-      let catty = timeBlock.category
-      if ( startDate != timeBlock.startDate || endDate != timeBlock.endDate ) { // if the duration is different
-        let oldDuration = timeBlock.endDate.minutes(from: timeBlock.startDate)
-        let oldHoursToAdd = Double(oldDuration/60)
-        let difference = Double(newHoursToAdd-oldHoursToAdd)
-        catty.addToTotalHours(hoursToAdd: difference)
-      }
-      catColor = (color?.toHex())!
-      catty.setColor(color: catColor!) // set the color
-
-      
-      // Handle activities
-      var addActivity = true
-      for a in activities {
-        if ( a == activity ) {
-          addActivity = false
+      var catty: Category?
+      if ( timeBlock.category.name == categoryString ) { // user didn't change the overall category
+        catty = timeBlock.category
+        if ( startDate != timeBlock.startDate || endDate != timeBlock.endDate ) { // if the duration is different
+          let oldDuration = timeBlock.endDate.minutes(from: timeBlock.startDate)
+          let oldHoursToAdd = Double(oldDuration/60)
+          let difference = Double(newHoursToAdd-oldHoursToAdd)
+          catty?.addToTotalHours(hoursToAdd: difference)
+        }
+        catColor = (color?.toHex())!
+        catty?.setColor(color: catColor!) // set the color
+      } else { // they totally changed the category
+        for cat in categories {
+          if ( cat.getName() == categoryString ) { // category already exists elsewhere, so add to the right one
+            catty = cat
+            catty?.addToTotalHours(hoursToAdd: newHoursToAdd)
+            break
+          } else { // totally new category
+            catty = Category(name: categoryString!, hoursToAdd: newHoursToAdd)
+            categories.append(catty!)
+          }
         }
       }
-
       do { try Disk.save(categories, to: .documents, as: "categories.json") }
       catch let error { print("\(error)") }
       
-      if ( addActivity ) {
-        activities.append(activity!)
-        do { try Disk.save(activities, to: .documents, as: "activities.json") }
-        catch let error { print("\(error)") }
+      // Handle activities
+      var acty: Activity?
+      if ( timeBlock.activity.name == activityString ) { // same activity
+        
+      } else { // changed activity
+        for act in activities {
+          if ( act.getName() == activityString ) { // activity already exists
+            acty = act
+            acty?.addToTotalHours(hoursToAdd: newHoursToAdd)
+            break
+          } else { // totally new activity
+            acty = Activity(name: activityString!, hoursToAdd: newHoursToAdd)
+            activities.append(acty!)
+          }
+        }
       }
+      
+      do { try Disk.save(activities, to: .documents, as: "activities.json") }
+      catch let error { print("\(error)") }
       
       var counter = 0
       for oldBlock in timeBlocks {
@@ -257,8 +280,8 @@ class EditTimeBlockVC: FormViewController {
       }
       
       // Edit timeBlock
-      timeBlock.category = catty
-      timeBlock.activity = activity!
+      timeBlock.category = catty!
+      timeBlock.activity = acty!
       timeBlock.startDate = startDate!
       timeBlock.endDate = endDate!
       timeBlock.lengthOfTime = lengthOfTime!
@@ -274,8 +297,8 @@ class EditTimeBlockVC: FormViewController {
       catch let error { print("\(error)") }
       
     } else {
-      if ( category == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the category.") }
-      else if ( activity == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the activity.") }
+      if ( categoryString == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the category.") }
+      else if ( activityString == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the activity.") }
       else if ( quality == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please rate the quality of the experience.") }
       else { self.showAlert(withTitle: "Missing Information", message: "Please pick a color.") }
     }

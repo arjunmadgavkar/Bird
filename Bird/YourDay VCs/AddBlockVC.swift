@@ -20,9 +20,10 @@ class AddBlockVC: FormViewController {
   var categories = [Category]()
   var goals = [Goal]()
   var namesOfCategories = [String]()
+  var namesOfActivities = [String]()
   var categoriesWithColors = [String]()
   var namesOfColors = [String]()
-  var activities = [String]()
+  var activities = [Activity]()
   let today = Date()
   
   override func viewDidLoad() {
@@ -38,7 +39,7 @@ class AddBlockVC: FormViewController {
     catch let error { print("\(error)") }
     do { categories = try Disk.retrieve("categories.json", from: .documents, as: [Category].self) }
     catch let error { print("\(error)") }
-    do { activities = try Disk.retrieve("activities.json", from: .documents, as: [String].self) }
+    do { activities = try Disk.retrieve("activities.json", from: .documents, as: [Activity].self) }
     catch let error { print("\(error)") }
     do { goals = try Disk.retrieve("goals.json", from: .documents, as: [Goal].self) }
     catch let error { print("\(error)") }
@@ -50,6 +51,13 @@ class AddBlockVC: FormViewController {
         categoriesWithColors.append(cat.name)
       }
     }
+    namesOfCategories.sort() // sorted order
+    
+    for activity in activities {
+      namesOfActivities.append(activity.name)
+    }
+    namesOfActivities.sort() // sorted order
+    
   }
   
   func setUpForm() {
@@ -118,7 +126,7 @@ class AddBlockVC: FormViewController {
       }
       <<< SuggestionAccessoryRow<String>() {
         $0.filterFunction = { text in
-          self.activities.filter({ $0.hasPrefix(text) })
+          self.namesOfActivities.filter({ $0.hasPrefix(text) })
         }
         $0.placeholder = "Code 🙏🏽"
         $0.title = "Activity"
@@ -211,7 +219,7 @@ class AddBlockVC: FormViewController {
     // Form properties
     var color : UIColor?
     var flow, unpleasant : Bool?
-    var category, catColor, activity, accomplishments, learnings: String?
+    var categoryString, catColor, activityString, accomplishments, learnings: String?
     var quality : Int?
     // Date properties
     let calendar = Calendar.current
@@ -220,8 +228,8 @@ class AddBlockVC: FormViewController {
     
     // Get form values
     let formValues = self.form.values()
-    if ( formValues["category"] != nil ) { category = formValues["category"] as? String }
-    if ( formValues["activity"] != nil ) { activity = formValues["activity"] as? String }
+    if ( formValues["category"] != nil ) { categoryString = formValues["category"] as? String }
+    if ( formValues["activity"] != nil ) { activityString = formValues["activity"] as? String }
     if ( formValues["color"] != nil ) {
       color = formValues["color"] as? UIColor
       shouldPickColor = false
@@ -263,54 +271,69 @@ class AddBlockVC: FormViewController {
     let duration = endDate?.minutes(from: startDate!)
     let hoursToAdd = Double(duration!/60)
     
-    if ( category != nil && activity != nil && quality != nil && !shouldPickColor ) {
+    if ( categoryString != nil && activityString != nil && quality != nil && !shouldPickColor ) {
       // Get length of time
       let lengthOfTime = endDate?.minutes(from: startDate!)
       
       // Handle category
-      var categoryCounter = 0
       var catty: Category?
+      var catCounter = 0
+      var addCategory = true
       for cat in categories {
-        if ( cat.name == category! ) {
+        if ( cat.getName() == categoryString! ) { // category already exists
           catty = cat
-          if ( cat.color == "tempColor") {
-            catColor = (color?.toHex())! // get the new color since it was temporary before
-            catty?.color = catColor! // set the color
+          addCategory = false
+          if ( cat.getColor() == "tempColor") { // need to update color
+            catColor = (color?.toHex())!
+            catty?.setColor(color: catColor!) // set the color
             catty?.addToTotalHours(hoursToAdd: hoursToAdd)
           } else {
             catColor = catty?.getColor() // use the already set color
             catty?.addToTotalHours(hoursToAdd: hoursToAdd)
           }
+          break
         }
-        categoryCounter+=1
+        catCounter += 1
       }
-    
-      //let newCategory = Category(name: category!, color: catColor!)
+      categories.remove(at: catCounter)
+      if ( addCategory ) { // category doesn't exist, so add it
+        let newCategory = Category(name: categoryString!)
+        categories.append(newCategory)
+        do { try Disk.save(categories, to: .documents, as: "categories.json") }
+        catch let error { print("\(error)") }
+      } else {
+        categories.append(catty!)
+        do { try Disk.save(categories, to: .documents, as: "categories.json") }
+        catch let error { print("\(error)") }
+      }
       
-      // Handle activities
+      // Handle activity
+      var acty: Activity?
+      var actCounter = 0
       var addActivity = true
-      for a in activities {
-        if ( a == activity ) {
+      for act in activities {
+        if ( act.getName() == activityString! ) { // activity already exists
+          acty = act
           addActivity = false
+          acty?.addToTotalHours(hoursToAdd: hoursToAdd)
+          break
         }
+        actCounter += 1
       }
-      
-//      cat = Category(name: category!, color: catColor!, duration: 2.0)
-//      categories.append(cat!)
-//      categories.sort(by: { (c1, c2) -> Bool in
-//        return c1.name < c2.name
-//      })
-      do { try Disk.save(categories, to: .documents, as: "categories.json") }
-      catch let error { print("\(error)") }
-      
-      if ( addActivity ) { // this is a new activity, so save it
-        activities.append(activity!)
+      activities.remove(at: actCounter)
+      if ( addActivity ) { // activity doesn't exist, so add it
+        let newActivity = Activity(name: activityString!)
+        activities.append(newActivity)
+        do { try Disk.save(activities, to: .documents, as: "activities.json") }
+        catch let error { print("\(error)") }
+      } else {
+        activities.append(acty!)
         do { try Disk.save(activities, to: .documents, as: "activities.json") }
         catch let error { print("\(error)") }
       }
       
       // Create timeBlock
-      let timeBlock = TimeBlock(category : catty!, activity : activity!, startDate : startDate!, endDate : endDate!, lengthOfTime : lengthOfTime!, quality : quality!, flow : flow!, unpleasantFeelings : unpleasant!, accomplishments : accomplishments!, learnings : learnings!)
+      let timeBlock = TimeBlock(category : catty!, activity : acty!, startDate : startDate!, endDate : endDate!, lengthOfTime : lengthOfTime!, quality : quality!, flow : flow!, unpleasantFeelings : unpleasant!, accomplishments : accomplishments!, learnings : learnings!)
       
       // Check to see if the time block already exists
       var counter = 0
@@ -327,12 +350,12 @@ class AddBlockVC: FormViewController {
       var goalToUpdate: Goal!
       var goalCount = false
       for goal in goals {
-        if ( goal.name == category ) {
+        if ( goal.name == categoryString ) {
           goalCount = true
           goalToUpdate = goal
           break
         }
-        if ( goal.name == activity ) {
+        if ( goal.name == activityString ) {
           goalCount = true
           goalToUpdate = goal
           break
@@ -356,26 +379,15 @@ class AddBlockVC: FormViewController {
       timeBlocks.append(timeBlock) // add to timeBlocks array
       if ( timeBlock.isEarliestTimeBlock() ) { // if it's the earliest timeBlock, then set it
         TimeBlock.setEarliestTimeBlock(timeBlock: timeBlock)
-        do { try Disk.save(timeBlock, to: .documents, as: "earliestTimeBlock.json") } // try to save to array
-        catch let error { print(error) }
       }
-      
-      /*
-       
-      Sort time block array --
-      timeBlocks.sort(by: { (t1, t2) -> Bool in
-        return t1.startDate < t2.startDate
-      })
-       
-      */
       do {
         try Disk.save(timeBlocks, to: .documents, as: "timeBlocks.json") // Save the new timeBlocks
         addBlockDelegate?.didUpdate(timeBlock: timeBlock) // Tell YourDayCollectionVC "something changed, update yourself"
       }
       catch let error { print("\(error)") }
     } else {
-      if ( category == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the category.") }
-      else if ( activity == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the activity.") }
+      if ( categoryString == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the category.") }
+      else if ( activityString == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the activity.") }
       else if ( quality == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please rate the quality of the experience.") }
       else { self.showAlert(withTitle: "Missing Information", message: "Please pick a color.") }
     }

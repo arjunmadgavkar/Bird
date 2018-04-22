@@ -10,12 +10,12 @@ import Disk
 import Eureka
 import Foundation
 
-class TimeBlock: Codable {
+class TimeBlock: Codable, Comparable {
   // Type properties
   static var earliestTimeBlock: TimeBlock?
   // Instance properties
   var category: Category
-  var activity: String
+  var activity: Activity
   var startDate: Date
   var endDate: Date
   var lengthOfTime: Int
@@ -32,9 +32,15 @@ class TimeBlock: Codable {
   class func setEarliestTimeBlock(timeBlock: TimeBlock) {
     self.earliestTimeBlock = timeBlock
   }
+  final class func < (lhs: TimeBlock, rhs: TimeBlock) -> Bool {
+    return lhs.startDate < rhs.startDate
+  }
+  final class func == (lhs: TimeBlock, rhs: TimeBlock) -> Bool {
+    return lhs.startDate == rhs.startDate
+  }
   
   // Instance Methods
-  init(category: Category, activity: String, startDate: Date, endDate: Date, lengthOfTime: Int, quality: Int, flow: Bool, unpleasantFeelings: Bool, accomplishments: String, learnings: String) {
+  init(category: Category, activity: Activity, startDate: Date, endDate: Date, lengthOfTime: Int, quality: Int, flow: Bool, unpleasantFeelings: Bool, accomplishments: String, learnings: String) {
     self.category = category
     self.activity = activity
     self.startDate = startDate

@@ -10,21 +10,47 @@ import UIKit
 import Eureka
 import Foundation
 
-struct Activity : Codable {
-  let activity : String
+class Activity: Codable, Comparable, SuggestionValue {
+  let name: String
+  var totalHours: Double
   
-  init(activity : String) { self.activity = activity }
-}
-
-// SuggestionRow Protocol
-extension Activity : SuggestionValue {
-  init?(string stringValue: String) {
+  // Type Methods
+  final class func < (lhs: Activity, rhs: Activity) -> Bool {
+    return lhs.name < rhs.name
+  }
+  final class func == (lhs: Activity, rhs: Activity) -> Bool {
+    return lhs.name == rhs.name && lhs.totalHours == rhs.totalHours
+  }
+  
+  // Instance Methods
+  required init?(string stringValue: String) { // for suggestionValue protocol
     return nil
   }
+  
+  init(name: String) {
+    self.name = name
+    self.totalHours = 0
+  }
+  
+  init(name: String, hoursToAdd: Double) {
+    self.name = name
+    self.totalHours = hoursToAdd
+  }
+  
+  func getName() -> String {
+    return self.name
+  }
+  
+  func getTotalHours() -> Double {
+    return self.totalHours
+  }
+  func addToTotalHours(hoursToAdd: Double) {
+    self.totalHours += hoursToAdd
+    print("Activity has \(self.totalHours) total hours.")
+  }
+  
   var suggestionString: String {
-    return "\(self.activity)"
+    return "\(self.name)"
   }
-  static func ==(lhs: Activity, rhs: Activity) -> Bool {
-    return lhs.activity == rhs.activity
-  }
+  
 }

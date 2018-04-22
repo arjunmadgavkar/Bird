@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   var timeBlocks = [TimeBlock]()
   var categories = [Category]()
   var goals = [Goal]()
-  var activities = [String]()
+  var activities = [Activity]()
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     
@@ -34,7 +34,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      catch let error { print("\(error)") }
      do { try Disk.remove("goals.json", from: .documents) }
      catch let error { print("\(error)") }
-     
      */
     
     // Retrieve data
@@ -49,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     do { categories = try Disk.retrieve("categories.json", from: .documents, as: [Category].self) }
     catch let error { print("\(error)") }
-    do { activities = try Disk.retrieve("activities.json", from: .documents, as: [String].self) }
+    do { activities = try Disk.retrieve("activities.json", from: .documents, as: [Activity].self) }
     catch let error { print("\(error)") }
     do { goals = try Disk.retrieve("goals.json", from: .documents, as: [Goal].self) }
     catch let error { print("\(error)") }
@@ -58,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var addCategories = false
     if ( categories.count == 0 ) {
       let namesOfCategories = ["Commute", "Deep Work", "Exercise", "Family", "Learning", "Mindfulness", "Morning Routine", "Relax", "Sleep", "Social", "Waste", "Work"]
-      var i = 0;
+      var i = 0
       while (i < 11) {
         categories.append(Category(name: namesOfCategories[i]))
         i+=1
@@ -69,7 +68,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var addActivities = false
     if ( activities.count == 0 ) {
-      activities = ["Code", "Eat", "Hike", "Listen to Music", "Listen to Podcast", "Meditate", "Read", "Run", "Schoolwork", "Sleep", "Think", "TV"]
+      let namesOfActivities = ["Code", "Eat", "Hike", "Listen to Music", "Listen to Podcast", "Meditate", "Read", "Run", "Schoolwork", "Sleep", "Think", "TV"]
+      var i = 0
+      while (i < 11) {
+        activities.append(Activity(name: namesOfActivities[i]))
+        i+=1
+      }
       addActivities = true
     }
     

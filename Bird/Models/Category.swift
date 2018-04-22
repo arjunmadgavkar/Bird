@@ -10,12 +10,23 @@ import UIKit
 import Eureka
 import Foundation
 
-class Category: Codable, SuggestionValue {
+class Category: Codable, Comparable, SuggestionValue {
+  // Type Properties
+  
+  // Instance Properties
   let name: String
   var color: String
   var totalHours: Double
   
+  // Type Methods
+  final class func < (lhs: Category, rhs: Category) -> Bool {
+    return lhs.name < rhs.name
+  }
+  final class func == (lhs: Category, rhs: Category) -> Bool {
+    return lhs.name == rhs.name && lhs.totalHours == rhs.totalHours
+  }
   
+  // Instance Methods
   required init?(string stringValue: String) { // for suggestionValue protocol
     return nil
   }
@@ -26,11 +37,20 @@ class Category: Codable, SuggestionValue {
     self.totalHours = 0.0
   }
   
+  init(name: String, hoursToAdd: Double) {
+    self.name = name
+    self.color = "tempColor" // when initializing categories in app delegate for first time, add temporary color
+    self.totalHours = hoursToAdd
+  }
+  
   var suggestionString: String {
     return "\(self.name)"
   }
-  static func ==(lhs: Category, rhs: Category) -> Bool {
-    return lhs.name == rhs.name
+  
+  
+  
+  func getName() -> String {
+    return self.name
   }
   
   func getTotalHours() -> Double {

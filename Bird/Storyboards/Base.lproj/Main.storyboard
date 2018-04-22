@@ -32,7 +32,7 @@
         <scene sceneID="Sbe-9o-lNF">
             <objects>
                 <viewControllerPlaceholder storyboardName="YourDay" id="h5k-vg-kfj" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="ndL-Vv-QaL"/>
+                    <tabBarItem key="tabBarItem" title="Your Day" id="ndL-Vv-QaL"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FHy-pb-YuN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -42,7 +42,7 @@
         <scene sceneID="JoO-j4-A5i">
             <objects>
                 <viewControllerPlaceholder storyboardName="Goals" id="tmA-LZ-j2d" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="zx9-Nv-RPe"/>
+                    <tabBarItem key="tabBarItem" title="Goals" id="zx9-Nv-RPe"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MAq-9g-oWq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -52,7 +52,7 @@
         <scene sceneID="0ka-dY-SdJ">
             <objects>
                 <viewControllerPlaceholder storyboardName="Data" id="eja-Ni-Zxv" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="Gga-x3-W0w"/>
+                    <tabBarItem key="tabBarItem" title="Data" id="Gga-x3-W0w"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qda-fL-6Ev" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

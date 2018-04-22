@@ -81,6 +81,7 @@ class YourDayCollectionVC: UIViewController {
     timeBlockCollectionView.delegate = self
     timeBlockCollectionView.dataSource = self
     getBlocksFromDisk()
+    //timeBlockCollectionView.reloadData()
   }
   
   func getBlocksFromDisk() {
@@ -90,12 +91,15 @@ class YourDayCollectionVC: UIViewController {
       let userDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.startDate)
       if ( userDate.month == today.month && userDate.day == today.day && userDate.year == today.year ) {
         currentDateBlocks.append(timeBlock) // Add them to today's date blocks array
+        print("Arjun: \(timeBlock.startDate)")
       }
     }
-    currentDateBlocks.sort { (t1, t2) -> Bool in
-      if ( t1.startDate < t2.startDate ) { return true } // Sort today's blocks by time
-      return false
+    
+    currentDateBlocks.sort()
+    for cd in currentDateBlocks {
+      print("Arjun2: \(cd.startDate)")
     }
+    
   }
   
   // MARK: Calendar Set Up 
@@ -202,7 +206,7 @@ extension YourDayCollectionVC: UICollectionViewDataSource {
     // Activity label
     let timeBlock = currentDateBlocks[indexPath.row]
     timeCell.categoryActivityLabel.numberOfLines = 0
-    timeCell.categoryActivityLabel.text = timeBlock.category.name + " (" + timeBlock.activity + ")"
+    timeCell.categoryActivityLabel.text = timeBlock.category.getName() + " (" + timeBlock.activity.getName() + ")"
     
     // Time label
     var startTime, endTime: String!

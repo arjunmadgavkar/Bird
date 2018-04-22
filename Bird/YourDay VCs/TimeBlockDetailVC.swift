@@ -37,7 +37,7 @@ class TimeBlockDetailVC: UIViewController {
     var startTime, endTime: DateComponents! // Mark: Caution
     if ( timeBlock != nil ) { // Make sure timeBlock was passed
       categoryLabel.text = timeBlock?.category.name
-      activityLabel.text = timeBlock?.activity
+      activityLabel.text = timeBlock?.activity.name
       startTime = usercalendar.dateComponents(in: usercalendar.timeZone, from: (timeBlock?.startDate)!)
       startTimeLabel.text = String(describing: startTime.hour!) // Use exclamation to tell Swift again this isn't optional
       endTime = usercalendar.dateComponents(in: usercalendar.timeZone, from: (timeBlock?.endDate)!)
