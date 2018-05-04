@@ -55,7 +55,7 @@ class YourDayCollectionVC: UIViewController {
       NSAttributedStringKey.foregroundColor: UIColor.black,
       NSAttributedStringKey.font: AvenirNextHeavy(size: 40.0)
     ]
-    // Set Image
+    // Set Image for Button
     var image = UIImage(named: "add_button")
     image = image?.withRenderingMode(.alwaysOriginal)
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style:.plain, target: self, action: #selector(addBtnClicked))
@@ -85,21 +85,21 @@ class YourDayCollectionVC: UIViewController {
   }
   
   func getBlocksFromDisk() {
-    do { timeBlocks = try Disk.retrieve("timeBlocks.json", from: .documents, as: [TimeBlock].self) }
-    catch let error { print("\(error)") }
-    for timeBlock in timeBlocks { // Find the timeBlocks that are on today's date
-      let userDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.startDate)
-      if ( userDate.month == today.month && userDate.day == today.day && userDate.year == today.year ) {
-        currentDateBlocks.append(timeBlock) // Add them to today's date blocks array
-        print("Arjun: \(timeBlock.startDate)")
+    do {
+      if let blocks = try TimeBlock.getTimeBlocks() {
+        timeBlocks = blocks
+        for timeBlock in timeBlocks { // Find the timeBlocks that are on today's date
+          let userDate = calendar.dateComponents(in: calendar.timeZone, from: timeBlock.startDate)
+          if ( userDate.month == today.month && userDate.day == today.day && userDate.year == today.year ) {
+            currentDateBlocks.append(timeBlock) // Add them to today's date blocks array
+            print("Arjun: \(timeBlock.startDate)")
+          }
+        }
+        currentDateBlocks.sort()
       }
+    } catch {
+      print("Error")
     }
-    
-    currentDateBlocks.sort()
-    for cd in currentDateBlocks {
-      print("Arjun2: \(cd.startDate)")
-    }
-    
   }
   
   // MARK: Calendar Set Up 
@@ -209,59 +209,9 @@ extension YourDayCollectionVC: UICollectionViewDataSource {
     timeCell.categoryActivityLabel.text = timeBlock.category.getName() + " (" + timeBlock.activity.getName() + ")"
     
     // Time label
-    var startTime, endTime: String!
-    var startTimeMorning, startTimePM, endTimeMorning, endTimePM: Bool!
     let userStartDate = calendar.dateComponents(in: Calendar.current.timeZone, from: timeBlock.startDate)
     let userEndDate = calendar.dateComponents(in: calendar.timeZone, from: timeBlock.endDate)
-    
-    // Format minutes
-    var startMinute = String(describing: userStartDate.minute!)
-    if ( startMinute == "0" ) { startMinute = "" }
-    else { startMinute = ":" + startMinute }
-    var endMinute = String(describing: userStartDate.minute!)
-    if ( endMinute == "0" ) { endMinute = "" }
-    else { endMinute = ":" + endMinute }
-    
-    // Format hours
-    var startHour = userStartDate.hour!
-    if ( startHour == 0 ) { // midnight
-      startHour = startHour + 12
-      startTimeMorning = true
-      startTimePM = false
-    } else if ( startHour > 0 && startHour < 12)  { // morning
-      startTimeMorning = true
-      startTimePM = false
-    } else if ( startHour >= 12 ) { // afternoon and evening
-      if ( startHour != 12 ) { startHour = startHour - 12 } // don't subtract 12 if it's noon
-      startTimeMorning = false
-      startTimePM = true
-    }
-    var endHour = userEndDate.hour!
-    if ( endHour == 0 ) { // midnight
-      endHour = endHour + 12
-      endTimeMorning = true
-      endTimePM = false
-    } else if ( endHour > 0 && endHour < 12 ) { // morning
-      endTimeMorning = true
-      endTimePM = false
-    } else if ( endHour >= 12 ) { // afternoon and evening
-      if ( endHour != 12 ) { endHour = endHour - 12 } // don't subtract 12 if it's noon
-      endTimeMorning = false
-      endTimePM = true
-    }
-    
-    if ( startTimeMorning && endTimeMorning ) { // both am
-      startTime = "\(startHour)" + "\(startMinute)"
-      endTime = "\(endHour)" + "\(endMinute)" + "am"
-    } else if ( startTimePM && endTimePM ) { // both pm
-      startTime = "\(startHour)" + "\(startMinute)"
-      endTime = "\(endHour)" + "\(endMinute)" + "pm"
-    } else { // different
-      startTime = "\(startHour)" + "\(startMinute)" + "am"
-      endTime = "\(endHour)" + "\(endMinute)" + "pm"
-    }
-    
-    timeCell.timeLabel.text = startTime + "-" + endTime + ":"
+    timeCell.timeLabel.text = dateRangeToString(startDate: userStartDate, endDate: userEndDate) + ":" // add colon to string
     
     // Set colors
     timeCell.backgroundColor = UIColor(hex: timeBlock.category.getColor())
@@ -310,7 +260,7 @@ extension YourDayCollectionVC : UICollectionViewDelegateFlowLayout {
 
 extension YourDayCollectionVC: JTAppleCalendarViewDataSource {
   func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
-    let startDate = formatter.date(from: "03 09 2018")
+    let startDate = formatter.date(from: "01 01 2018")
     let params = ConfigurationParameters(startDate: startDate!,
                                          endDate: Date(),
                                          numberOfRows: 1,

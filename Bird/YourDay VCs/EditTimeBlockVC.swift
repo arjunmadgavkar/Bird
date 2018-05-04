@@ -57,10 +57,12 @@ class EditTimeBlockVC: FormViewController {
   func setUpForm() {
     var startTime = DateComponents()
     var endTime = DateComponents()
-    startTime.hour = userCalendar.component(.hour, from: timeBlock.startDate) // Hour
-    endTime.hour = userCalendar.component(.hour, from: timeBlock.endDate) // Hour
-    startTime.minute = userCalendar.component(.minute, from: timeBlock.startDate) // Minute
-    endTime.minute = userCalendar.component(.minute, from: timeBlock.endDate) // Minute
+    // Start Time
+    startTime.hour = userCalendar.component(.hour, from: timeBlock.startDate)
+    startTime.minute = userCalendar.component(.minute, from: timeBlock.startDate)
+    // End Time
+    endTime.hour = userCalendar.component(.hour, from: timeBlock.endDate) 
+    endTime.minute = userCalendar.component(.minute, from: timeBlock.endDate)
 
     SuggestionAccessoryRow<String>.defaultCellSetup = { cell, row in
       cell.textLabel?.font = AvenirNext(size: 17.0)
@@ -154,24 +156,26 @@ class EditTimeBlockVC: FormViewController {
         row.value = timeBlock.unpleasantFeelings
       }
       <<< TextAreaRow(){ row in
-        row.title = "What did you accomplish during this time?"
-        row.tag = "accomplishments"
-        row.placeholder = "What did you accomplish during this time? (optional)"
-        row.value = timeBlock.accomplishments
+        row.title = "Notes"
+        row.tag = "notes"
+        row.placeholder = "Any notes about this event? (optional)"
+        row.value = timeBlock.notes
       }
-      <<< TextAreaRow(){ row in
-        row.title = "What did you learn during this time?"
-        row.tag = "learnings"
-        row.placeholder = "What did you learn during this time? (optional)"
-        row.value = timeBlock.learnings
-      }
+      // Button
+      +++ Section()
+      <<< ButtonRow(){ row in
+          row.title = "⏰ Add Time Block ⏰"
+        }
+        .onCellSelection({ (cell, row) in
+          self.deleteTimeBlock()
+        })
   }
   
   func editTimeBlock() {
     // Form properties
     var color : UIColor?
     var flow, unpleasant : Bool?
-    var categoryString, activityString, accomplishments, learnings : String?
+    var categoryString, activityString, notes : String?
     var quality : Int?
     // Date properties
     var startDateComponents = DateComponents()
@@ -185,10 +189,8 @@ class EditTimeBlockVC: FormViewController {
       color = formValues["color"] as? UIColor
       shouldPickColor = false
     }
-    if ( formValues["accomplishments"] != nil ) { accomplishments = formValues["accomplishments"] as? String }
-    else { accomplishments = "Nothing added." }
-    if ( formValues["learnings"] != nil ) { learnings = formValues["learnings"] as? String }
-    else { learnings = "Nothing added." }
+    if ( formValues["notes"] != nil ) { notes = formValues["notes"] as? String }
+    else { notes = "Nothing added." }
     if ( formValues["rating"] != nil ) { quality = formValues["rating"] as? Int } // Int values
     if ( formValues["flow"] != nil ) { flow = formValues["flow"] as? Bool } // Boolean values
     else { flow = false; }
@@ -253,7 +255,13 @@ class EditTimeBlockVC: FormViewController {
       // Handle activities
       var acty: Activity?
       if ( timeBlock.activity.name == activityString ) { // same activity
-        
+        acty = timeBlock.activity
+        if ( startDate != timeBlock.startDate || endDate != timeBlock.endDate ) { // if the duration is different
+            let oldDuration = timeBlock.endDate.minutes(from: timeBlock.startDate)
+            let oldHoursToAdd = Double(oldDuration/60)
+            let difference = Double(newHoursToAdd-oldHoursToAdd)
+            acty?.addToTotalHours(hoursToAdd: difference)
+        }
       } else { // changed activity
         for act in activities {
           if ( act.getName() == activityString ) { // activity already exists
@@ -288,8 +296,7 @@ class EditTimeBlockVC: FormViewController {
       timeBlock.quality = quality!
       timeBlock.flow = flow!
       timeBlock.unpleasantFeelings = unpleasant!
-      timeBlock.accomplishments = accomplishments!
-      timeBlock.learnings = learnings!
+      timeBlock.notes = notes!
       // add it back to the array
       timeBlocks.append(timeBlock)
       
@@ -303,8 +310,12 @@ class EditTimeBlockVC: FormViewController {
       else { self.showAlert(withTitle: "Missing Information", message: "Please pick a color.") }
     }
   } // editTimeBlock()
-
   
+  func deleteTimeBlock() {
+    //timeBlock
+  }
+
+  // MARK: IBActions
   @IBAction func cancelBtnTapped(_ sender: Any) { self.dismiss(animated: true, completion: nil) } // Cancel
   @IBAction func doneBtnTapped(_ sender: Any) { // Save edits + unwind
     editTimeBlock()

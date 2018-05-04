@@ -24,7 +24,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="11P-dx-7Ym" customClass="PieChartView" customModule="Charts">
-                                <rect key="frame" x="0.0" y="354" width="375" height="313"/>
+                                <rect key="frame" x="0.0" y="354" width="375" height="264"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GhF-kz-fUG">
@@ -66,6 +66,7 @@
                         <viewLayoutGuide key="safeArea" id="B4d-aO-GFJ"/>
                     </view>
                     <navigationItem key="navigationItem" id="nxF-jn-L10"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="activityPieChart" destination="11P-dx-7Ym" id="ma5-mf-MoO"/>
                         <outlet property="categoryPieChart" destination="FYJ-ug-vrv" id="76u-ww-r0N"/>
@@ -75,11 +76,13 @@
             </objects>
             <point key="canvasLocation" x="204" y="46.326836581709152"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Data-->
         <scene sceneID="86f-tZ-iOE">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gCh-Br-oDE" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Data" id="DaO-a9-6lB"/>
                     <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="uSb-ae-uVK">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

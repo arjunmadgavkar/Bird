@@ -35,8 +35,14 @@ class AddBlockVC: FormViewController {
   
   func dataPull() {
     // Get data saved on Disk
-    do { timeBlocks = try Disk.retrieve("timeBlocks.json", from: .documents, as: [TimeBlock].self) }
-    catch let error { print("\(error)") }
+    do {
+      if let blocks = try TimeBlock.getTimeBlocks() {
+        timeBlocks = blocks
+      }
+    } catch {
+      print("error")
+    }
+    
     do { categories = try Disk.retrieve("categories.json", from: .documents, as: [Category].self) }
     catch let error { print("\(error)") }
     do { activities = try Disk.retrieve("activities.json", from: .documents, as: [Activity].self) }
@@ -194,15 +200,9 @@ class AddBlockVC: FormViewController {
         row.value = false
       }
       <<< TextAreaRow(){ row in
-        row.title = "What did you accomplish during this time?"
-        row.tag = "accomplishments"
-        row.placeholder = "What did you accomplish during this time? (optional)"
-        row.value = ""
-      }
-      <<< TextAreaRow(){ row in
-        row.title = "What did you learn during this time?"
-        row.tag = "learnings"
-        row.placeholder = "What did you learn during this time? (optional)"
+        row.title = "Notes"
+        row.tag = "notes"
+        row.placeholder = "Anything you want to note about this event? (optional)"
         row.value = ""
       }
       // Button
@@ -219,7 +219,7 @@ class AddBlockVC: FormViewController {
     // Form properties
     var color : UIColor?
     var flow, unpleasant : Bool?
-    var categoryString, catColor, activityString, accomplishments, learnings: String?
+    var categoryString, catColor, activityString, notes: String?
     var quality : Int?
     // Date properties
     let calendar = Calendar.current
@@ -234,10 +234,8 @@ class AddBlockVC: FormViewController {
       color = formValues["color"] as? UIColor
       shouldPickColor = false
     }
-    if ( formValues["accomplishments"] != nil ) { accomplishments = formValues["accomplishments"] as? String }
-    else { accomplishments = "Nothing added by user." }
-    if ( formValues["learnings"] != nil ) { learnings = formValues["learnings"] as? String }
-    else { learnings = "Nothing added by user." }
+    if ( formValues["notes"] != nil ) { notes = formValues["notes"] as? String }
+    else { notes = "Nothing added." }
     if ( formValues["rating"] != nil ) { quality = formValues["rating"] as? Int }
     // Boolean values
     if ( formValues["flow"] != nil ) { flow = formValues["flow"] as? Bool }
@@ -268,6 +266,12 @@ class AddBlockVC: FormViewController {
     
     let startDate = calendar.date(from: startDateComponents)
     let endDate = calendar.date(from: endDateComponents)
+    
+    if startDate! > endDate! { // make sure that the dates are valid
+      showAlert(withTitle: "Error", message: "Start date is after the end date. Please adjust data accordingly.")
+      return
+    }
+    
     let duration = endDate?.minutes(from: startDate!)
     let hoursToAdd = Double(duration!/60)
     
@@ -295,13 +299,15 @@ class AddBlockVC: FormViewController {
         }
         catCounter += 1
       }
-      categories.remove(at: catCounter)
+      
       if ( addCategory ) { // category doesn't exist, so add it
         let newCategory = Category(name: categoryString!)
         categories.append(newCategory)
+        catty = newCategory
         do { try Disk.save(categories, to: .documents, as: "categories.json") }
         catch let error { print("\(error)") }
       } else {
+        categories.remove(at: catCounter)
         categories.append(catty!)
         do { try Disk.save(categories, to: .documents, as: "categories.json") }
         catch let error { print("\(error)") }
@@ -320,20 +326,22 @@ class AddBlockVC: FormViewController {
         }
         actCounter += 1
       }
-      activities.remove(at: actCounter)
+      
       if ( addActivity ) { // activity doesn't exist, so add it
         let newActivity = Activity(name: activityString!)
         activities.append(newActivity)
+        acty = newActivity
         do { try Disk.save(activities, to: .documents, as: "activities.json") }
         catch let error { print("\(error)") }
       } else {
+        activities.remove(at: actCounter)
         activities.append(acty!)
         do { try Disk.save(activities, to: .documents, as: "activities.json") }
         catch let error { print("\(error)") }
       }
       
       // Create timeBlock
-      let timeBlock = TimeBlock(category : catty!, activity : acty!, startDate : startDate!, endDate : endDate!, lengthOfTime : lengthOfTime!, quality : quality!, flow : flow!, unpleasantFeelings : unpleasant!, accomplishments : accomplishments!, learnings : learnings!)
+      let timeBlock = TimeBlock(category : catty!, activity : acty!, startDate : startDate!, endDate : endDate!, lengthOfTime : lengthOfTime!, quality : quality!, flow : flow!, unpleasantFeelings : unpleasant!, notes : notes!)
       
       // Check to see if the time block already exists
       var counter = 0
@@ -381,10 +389,13 @@ class AddBlockVC: FormViewController {
         TimeBlock.setEarliestTimeBlock(timeBlock: timeBlock)
       }
       do {
-        try Disk.save(timeBlocks, to: .documents, as: "timeBlocks.json") // Save the new timeBlocks
+        try TimeBlock.setTimeBlocks(timeBlocks: timeBlocks) // Save the new timeBlocks
         addBlockDelegate?.didUpdate(timeBlock: timeBlock) // Tell YourDayCollectionVC "something changed, update yourself"
+        self.navigationController?.popToRootViewController(animated: true)
       }
-      catch let error { print("\(error)") }
+      catch {
+        print("error")
+      }
     } else {
       if ( categoryString == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the category.") }
       else if ( activityString == nil ) { self.showAlert(withTitle: "Missing Information", message: "Please fill out the activity.") }

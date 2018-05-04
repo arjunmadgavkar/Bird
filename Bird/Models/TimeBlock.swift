@@ -12,6 +12,7 @@ import Foundation
 
 class TimeBlock: Codable, Comparable {
   // Type properties
+  static var allTimeBlocks = [TimeBlock]()
   static var earliestTimeBlock: TimeBlock?
   // Instance properties
   var category: Category
@@ -22,8 +23,7 @@ class TimeBlock: Codable, Comparable {
   var quality: Int
   var flow: Bool
   var unpleasantFeelings: Bool
-  var accomplishments: String
-  var learnings: String
+  var notes: String
   
   // Type Methods
   class func getEarliestTimeBlock() -> TimeBlock {
@@ -32,15 +32,51 @@ class TimeBlock: Codable, Comparable {
   class func setEarliestTimeBlock(timeBlock: TimeBlock) {
     self.earliestTimeBlock = timeBlock
   }
-  final class func < (lhs: TimeBlock, rhs: TimeBlock) -> Bool {
+  
+  class func getTimeBlocks() throws -> [TimeBlock]? {
+    do {
+      let timeBlocks = try Disk.retrieve("timeBlocks.json", from: .documents, as: [TimeBlock].self)
+      return timeBlocks
+    } catch let error {
+      print("Could not get time blocks because of this error: \(error)")
+      return nil
+    }
+  }
+  class func setTimeBlocks(timeBlocks: [TimeBlock]) throws {
+    self.allTimeBlocks = timeBlocks
+    do { try Disk.save(self.allTimeBlocks, to: .documents, as: "timeBlocks.json") } // save to disk
+    catch let error { print("\(error)") }
+  }
+  
+  class func deleteAllTimeBlocks() {
+    do { try Disk.remove("timeBlocks.json", from: .documents) }
+    catch let error { print("\(error)") }
+    do { try Disk.remove("earliestTimeBlock.json", from: .documents) }
+    catch let error { print("\(error)") }
+    self.allTimeBlocks = []
+  }
+  /* Helpful for debugging crashes*/
+  class func deleteMostRecentTimeBlock() throws {
+    do {
+      if let blocks = try self.getTimeBlocks() {
+        var timeBlocks = blocks
+        timeBlocks.removeLast()
+        try self.setTimeBlocks(timeBlocks: timeBlocks)
+      }
+    } catch let error {
+      print("Could not get time blocks because of this error: \(error)")
+    }
+  }
+    
+  final class func < (lhs: TimeBlock, rhs: TimeBlock) -> Bool { // final class, so can't be overridden
     return lhs.startDate < rhs.startDate
   }
-  final class func == (lhs: TimeBlock, rhs: TimeBlock) -> Bool {
+  final class func == (lhs: TimeBlock, rhs: TimeBlock) -> Bool { // final class, so can't be overridden
     return lhs.startDate == rhs.startDate
   }
   
   // Instance Methods
-  init(category: Category, activity: Activity, startDate: Date, endDate: Date, lengthOfTime: Int, quality: Int, flow: Bool, unpleasantFeelings: Bool, accomplishments: String, learnings: String) {
+  init(category: Category, activity: Activity, startDate: Date, endDate: Date, lengthOfTime: Int, quality: Int, flow: Bool, unpleasantFeelings: Bool, notes: String) {
     self.category = category
     self.activity = activity
     self.startDate = startDate
@@ -49,8 +85,7 @@ class TimeBlock: Codable, Comparable {
     self.quality = quality
     self.flow = flow
     self.unpleasantFeelings = unpleasantFeelings
-    self.accomplishments = accomplishments
-    self.learnings = learnings
+    self.notes = notes
   }
   
   func isEarliestTimeBlock() -> Bool {

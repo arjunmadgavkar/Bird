@@ -8,6 +8,61 @@
 
 import UIKit
 
+/** Global Functions **/
+// Dates
+func dateRangeToString(startDate: DateComponents, endDate: DateComponents) -> String {
+  // Variables
+  var startTime, endTime: String!
+  var startTimeMorning, startTimePM, endTimeMorning, endTimePM: Bool!
+  // Format minutes
+  var startMinute = String(describing: startDate.minute!)
+  if ( startMinute == "0" ) { startMinute = "" }
+  else { startMinute = ":" + startMinute }
+  var endMinute = String(describing: endDate.minute!)
+  if ( endMinute == "0" ) { endMinute = "" }
+  else { endMinute = ":" + endMinute }
+  
+  // Format hours
+  var startHour = startDate.hour!
+  if ( startHour == 0 ) { // midnight
+    startHour = startHour + 12
+    startTimeMorning = true
+    startTimePM = false
+  } else if ( startHour > 0 && startHour < 12)  { // morning
+    startTimeMorning = true
+    startTimePM = false
+  } else if ( startHour >= 12 ) { // afternoon and evening
+    if ( startHour != 12 ) { startHour = startHour - 12 } // don't subtract 12 if it's noon
+    startTimeMorning = false
+    startTimePM = true
+  }
+  var endHour = endDate.hour!
+  if ( endHour == 0 ) { // midnight
+    endHour = endHour + 12
+    endTimeMorning = true
+    endTimePM = false
+  } else if ( endHour > 0 && endHour < 12 ) { // morning
+    endTimeMorning = true
+    endTimePM = false
+  } else if ( endHour >= 12 ) { // afternoon and evening
+    if ( endHour != 12 ) { endHour = endHour - 12 } // don't subtract 12 if it's noon
+    endTimeMorning = false
+    endTimePM = true
+  }
+  
+  if ( startTimeMorning && endTimeMorning ) { // both am
+    startTime = "\(startHour)" + "\(startMinute)"
+    endTime = "\(endHour)" + "\(endMinute)" + "am"
+  } else if ( startTimePM && endTimePM ) { // both pm
+    startTime = "\(startHour)" + "\(startMinute)"
+    endTime = "\(endHour)" + "\(endMinute)" + "pm"
+  } else { // different
+    startTime = "\(startHour)" + "\(startMinute)" + "am"
+    endTime = "\(endHour)" + "\(endMinute)" + "pm"
+  }
+  return startTime + "-" + endTime
+}
+// Fonts
 func AvenirNext(size: Float) -> UIFont { return UIFont(name: "Avenir Next", size: CGFloat(size))! }
 func AvenirNextHeavy(size: Float) -> UIFont { return UIFont(name: "Avenir-Heavy", size: CGFloat(size))! }
 func imagineRed() -> UIColor { return UIColor(rgb: 0xFF5964).withAlphaComponent(1.0) }

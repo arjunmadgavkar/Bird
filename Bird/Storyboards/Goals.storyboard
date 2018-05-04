@@ -87,6 +87,7 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="laK-gQ-n3m" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -244,11 +245,13 @@
             </objects>
             <point key="canvasLocation" x="1329" y="106"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Goals-->
         <scene sceneID="bXs-hj-kQN">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3zw-Fu-SZR" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Goals" id="UXl-LR-asM"/>
                     <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="ACb-Xd-aNA">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

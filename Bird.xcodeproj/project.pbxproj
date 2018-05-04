@@ -95,7 +95,7 @@
 		DC2D7AAA207BBF9F00D791D1 /* CalendarHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarHeaderView.swift; sourceTree = "<group>"; };
 		DC2D7AAC207FB3CB00D791D1 /* TimeBlockDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockDetailVC.swift; sourceTree = "<group>"; };
 		DC2D7AAE207FB3EA00D791D1 /* EditTimeBlockVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTimeBlockVC.swift; sourceTree = "<group>"; };
-		DC48086C20753F230042E1A5 /* TimeBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlock.swift; sourceTree = "<group>"; };
+		DC48086C20753F230042E1A5 /* TimeBlock.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = TimeBlock.swift; sourceTree = "<group>"; tabWidth = 2; };
 		DC59F3EC206D42E50049722A /* Utilities + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Utilities + Extensions.swift"; sourceTree = "<group>"; };
 		DC6E55B420863931009AC151 /* String+SuggestionValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "String+SuggestionValue.swift"; path = "../../Desktop/Arjun/Coding + MVPs/SuggestionRow-master/Sources/String+SuggestionValue.swift"; sourceTree = "<group>"; };
 		DC6E55B520863931009AC151 /* SuggestionRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SuggestionRow.swift; path = "../../Desktop/Arjun/Coding + MVPs/SuggestionRow-master/Sources/SuggestionRow.swift"; sourceTree = "<group>"; };
