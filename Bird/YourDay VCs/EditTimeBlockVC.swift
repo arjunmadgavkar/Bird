@@ -34,8 +34,8 @@ class EditTimeBlockVC: FormViewController {
   
   func dataPull() {
     // Get data saved on Disk
-    do { timeBlocks = try Disk.retrieve("timeBlocks.json", from: .documents, as: [TimeBlock].self) }
-    catch let error { print("\(error)") }
+    do { timeBlocks = try TimeBlock.getTimeBlocks()! } // if you're editing, then timeblocks exist...
+    catch { print("error") }
     do { categories = try Disk.retrieve("categories.json", from: .documents, as: [Category].self) }
     catch let error { print("\(error)") }
     do { activities = try Disk.retrieve("activities.json", from: .documents, as: [Activity].self) }
@@ -91,8 +91,9 @@ class EditTimeBlockVC: FormViewController {
       cell.textLabel?.font = AvenirNext(size: 17.0)
     }
     ButtonRow.defaultCellSetup = {cell, row in
-      cell.textLabel?.font = AvenirNext(size: 20.0)
-      cell.textLabel?.textColor = UIColor(rgb: 0x060A78).withAlphaComponent(1.0)
+      cell.textLabel?.font = AvenirNextHeavy(size: 20.0)
+      cell.textLabel?.tintColor = imagineRed()
+      cell.textLabel?.textColor = imagineRed()
     }
     
     form
@@ -164,7 +165,7 @@ class EditTimeBlockVC: FormViewController {
       // Button
       +++ Section()
       <<< ButtonRow(){ row in
-          row.title = "⏰ Add Time Block ⏰"
+          row.title = "Delete Time Block"
         }
         .onCellSelection({ (cell, row) in
           self.deleteTimeBlock()
@@ -300,7 +301,7 @@ class EditTimeBlockVC: FormViewController {
       // add it back to the array
       timeBlocks.append(timeBlock)
       
-      do { try Disk.save(timeBlocks, to: .documents, as: "timeBlocks.json") }
+      do { try TimeBlock.setTimeBlocks(timeBlocks: timeBlocks) }
       catch let error { print("\(error)") }
       
     } else {
@@ -312,7 +313,20 @@ class EditTimeBlockVC: FormViewController {
   } // editTimeBlock()
   
   func deleteTimeBlock() {
-    //timeBlock
+    // Remove timeBlock from array
+    var counter = 0
+    for oldBlock in timeBlocks {
+      if ( oldBlock.startDate == timeBlock.startDate ) {
+        timeBlocks.remove(at: counter)
+        break
+      }
+      counter += 1
+    }
+    // Save the new array of timeBlocks
+    do { try TimeBlock.setTimeBlocks(timeBlocks: timeBlocks) }
+    catch { print("error") }
+    // Dismiss VC
+    self.performSegue(withIdentifier: "unwindToYourDayVC", sender: nil)
   }
 
   // MARK: IBActions
