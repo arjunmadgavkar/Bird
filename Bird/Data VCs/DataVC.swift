@@ -26,7 +26,8 @@ class DataVC: UIViewController {
     viewControllerSetUp()
     dataPull()
     calculateCategoryData()
-    calculateActivityData()  }
+    calculateActivityData()
+  }
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(false)
@@ -65,7 +66,7 @@ class DataVC: UIViewController {
   func calculateCategoryData() {
     var categoryData = [PieChartDataEntry]()
     if ( timeBlocks.count > 0 && categories.count > 0 ) {
-      let earliestTimeBlock = TimeBlock.getEarliestTimeBlock()
+      guard let earliestTimeBlock = TimeBlock.getEarliestTimeBlock() else { return }
       let numberOfDaysSinceFirstBlock = today.days(from: earliestTimeBlock.startDate)
       let totalHoursSinceFirstBlock: Double!
       if ( numberOfDaysSinceFirstBlock < 1 ) { // first day
@@ -73,8 +74,6 @@ class DataVC: UIViewController {
       } else {
         totalHoursSinceFirstBlock = Double(numberOfDaysSinceFirstBlock * 24)
       }
-      
-      print("Hours since first block:\(totalHoursSinceFirstBlock)")
       
       // Handle categories
       for category in categories {
@@ -104,7 +103,7 @@ class DataVC: UIViewController {
   func calculateActivityData() {
     var activityData = [PieChartDataEntry]()
     if ( timeBlocks.count > 0 && activities.count > 0 ) {
-      let earliestTimeBlock = TimeBlock.getEarliestTimeBlock()
+      guard let earliestTimeBlock = TimeBlock.getEarliestTimeBlock() else { return }
       let numberOfDaysSinceFirstBlock = today.days(from: earliestTimeBlock.startDate)
       let totalHoursSinceFirstBlock: Double!
       if ( numberOfDaysSinceFirstBlock < 1 ) { // first day
@@ -112,8 +111,6 @@ class DataVC: UIViewController {
       } else {
         totalHoursSinceFirstBlock = Double(numberOfDaysSinceFirstBlock * 24)
       }
-      
-      print("Hours since first block:\(totalHoursSinceFirstBlock)")
       
       for activity in activities {
         if ( activity.getTotalHours() > 0 ) {
@@ -136,8 +133,9 @@ class DataVC: UIViewController {
       
       activityPieChart.data = chartData
     }
-    
-    
+  }
+  
+  func test() {
     
   }
   

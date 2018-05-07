@@ -167,6 +167,27 @@ extension UIColor {
 }
 
 extension Date {
+  /// Returns day of week written as a string (ex: "Wednesday")
+  func dayOfWeek() -> String? {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "EEEE"
+    return dateFormatter.string(from: self).capitalized
+  }
+  /// Returns day of week written as a string (ex: "Wednesday")
+  func dayOfWeekAbbreviation() -> String? {
+    let weekdays = [
+      "Sun",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat"
+    ]
+    let num = Calendar.current.component(.weekday, from: self)
+    //let number = Calendar.current.dateComponents([.weekday], from: self).weekday
+    return weekdays[num - 1]
+  }
   /// Returns the amount of years from another date
   func years(from date: Date) -> Int {
     return Calendar.current.dateComponents([.year], from: date, to: self).year ?? 0

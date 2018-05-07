@@ -41,9 +41,7 @@ class Goal: Codable {
       if ( d1 > d2 ) { return true }
       return false
     }
-    print("ARJUN: Dates Sorted -- \(datesCompleted)")
     self.numberOfCompletions += 1
-    print("ARJUN: Number of Completions -- \(self.numberOfCompletions)")
   }
   
   func setCurrentStreak() {

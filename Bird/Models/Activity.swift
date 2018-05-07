@@ -46,7 +46,6 @@ class Activity: Codable, Comparable, SuggestionValue {
   }
   func addToTotalHours(hoursToAdd: Double) {
     self.totalHours += hoursToAdd
-    print("Activity has \(self.totalHours) total hours.")
   }
   
   var suggestionString: String {

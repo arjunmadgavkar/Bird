@@ -92,8 +92,6 @@ class EditTimeBlockVC: FormViewController {
     }
     ButtonRow.defaultCellSetup = {cell, row in
       cell.textLabel?.font = AvenirNextHeavy(size: 20.0)
-      cell.textLabel?.tintColor = imagineRed()
-      cell.textLabel?.textColor = imagineRed()
     }
     
     form
@@ -169,6 +167,9 @@ class EditTimeBlockVC: FormViewController {
         }
         .onCellSelection({ (cell, row) in
           self.deleteTimeBlock()
+        })
+        .cellUpdate({ (cell, row) in
+          cell.textLabel?.textColor = imagineRed()
         })
   }
   

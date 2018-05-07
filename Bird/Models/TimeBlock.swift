@@ -13,7 +13,7 @@ import Foundation
 class TimeBlock: Codable, Comparable {
   // Type properties
   static var allTimeBlocks = [TimeBlock]()
-  static var earliestTimeBlock: TimeBlock?
+  //static var earliestTimeBlock: TimeBlock?
   // Instance properties
   var category: Category
   var activity: Activity
@@ -26,11 +26,22 @@ class TimeBlock: Codable, Comparable {
   var notes: String
   
   // Type Methods
-  class func getEarliestTimeBlock() -> TimeBlock {
-    return self.earliestTimeBlock!
+  class func getEarliestTimeBlock() -> TimeBlock? { // optional because won't exist until user creates one
+    do {
+      var timeBlock: TimeBlock?
+      timeBlock = try Disk.retrieve("earliestTimeBlock.json", from: .documents, as: TimeBlock.self)
+      return timeBlock
+    } catch {
+      return nil
+    }
   }
   class func setEarliestTimeBlock(timeBlock: TimeBlock) {
-    self.earliestTimeBlock = timeBlock
+    do {
+      let earliestTimeBlock = timeBlock
+      try Disk.save(earliestTimeBlock, to: .documents, as: "earliestTimeBlock.json")
+    } catch {
+      print("Unable to set the earliest block") // do something here?
+    }
   }
   
   class func getTimeBlocks() throws -> [TimeBlock]? {
@@ -89,11 +100,8 @@ class TimeBlock: Codable, Comparable {
   }
   
   func isEarliestTimeBlock() -> Bool {
-    if ( TimeBlock.earliestTimeBlock == nil ) {
-      TimeBlock.setEarliestTimeBlock(timeBlock: self)
-    } else {
-      let currentEarliestTimeBlock = TimeBlock.getEarliestTimeBlock()
-      if ( (currentEarliestTimeBlock.startDate) < self.startDate ) {
+    if let currentEarliestTimeBlock = TimeBlock.getEarliestTimeBlock() {
+      if currentEarliestTimeBlock.startDate < self.startDate {
         return false
       }
     }

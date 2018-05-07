@@ -58,7 +58,6 @@ class Category: Codable, Comparable, SuggestionValue {
   }
   func addToTotalHours(hoursToAdd: Double) {
     self.totalHours += hoursToAdd
-    print("Category has \(self.totalHours) total hours.")
   }
   func getColor() -> String {
     return self.color

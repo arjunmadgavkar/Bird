@@ -92,7 +92,6 @@ class YourDayCollectionVC: UIViewController {
           let userDate = calendar.dateComponents(in: calendar.timeZone, from: timeBlock.startDate)
           if ( userDate.month == today.month && userDate.day == today.day && userDate.year == today.year ) {
             currentDateBlocks.append(timeBlock) // Add them to today's date blocks array
-            print("Arjun: \(timeBlock.startDate)")
           }
         }
         currentDateBlocks.sort()
@@ -110,11 +109,13 @@ class YourDayCollectionVC: UIViewController {
   
   func handleCellTextColor(cell: CalendarCell, cellState: CellState) {
     if ( cellState.date > todayDate ) { // Gray if it's in the future
-      cell.calendarCellLabel?.textColor = UIColor.gray
+      cell.dayLabel.textColor = UIColor.gray
+      cell.calendarCellLabel.textColor = UIColor.gray
       cell.selectedView.isHidden = true
     } else {
+      cell.dayLabel.textColor = UIColor.black
       if ( cellState.isSelected ) { // If selected
-        cell.calendarCellLabel?.textColor = UIColor.white
+        cell.calendarCellLabel.textColor = UIColor.white
         cell.selectedView.isHidden = false
       } else { // If not selected
         cell.calendarCellLabel?.textColor = UIColor.black
@@ -273,20 +274,21 @@ extension YourDayCollectionVC: JTAppleCalendarViewDataSource {
 }
 
 extension YourDayCollectionVC: JTAppleCalendarViewDelegate {
-  /*
-   
+  /**
    * CollectionView requests content for cell that is going to be displayed soon (the cell is about to enter the visible field).
-   * The cell is either created for the first time
-   
-  */
+   * The cell is either created for the first time or reused.
+  **/
   func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
-    let calendarCell = calendar.dequeueReusableCell(withReuseIdentifier: "calendarCell", for: indexPath) as! CalendarCell // Gets a calCell object
-    calendarCell.calendarCellLabel.text = cellState.text // Since the calCell object is empty, we need to give it text
-    configureCell(cell: calendarCell, cellState: cellState) // Configure remaining cell properties
+    let calendarCell = calendar.dequeueReusableCell(withReuseIdentifier: "calendarCell", for: indexPath) as! CalendarCell // get a calCell object
+    calendarCell.dayLabel.text = date.dayOfWeekAbbreviation()! // set day of week label
+    calendarCell.calendarCellLabel.text = cellState.text // since the calCell object is empty, we need to give it text
+    configureCell(cell: calendarCell, cellState: cellState) // configure remaining cell properties
     return calendarCell
   }
   
-  // (2) CollectionView is requesting to display the cell after it has its view ready (the cell just became visible).
+  /**
+   * CollectionView is requesting to display the cell after it has its view ready (the cell just became visible).
+  **/
   func calendar(_ calendar: JTAppleCalendarView, willDisplay cell: JTAppleCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
     let calendarCell = cell as! CalendarCell
     calendarCell.calendarCellLabel.text = cellState.text
@@ -311,7 +313,8 @@ extension YourDayCollectionVC: JTAppleCalendarViewDelegate {
     guard let calendarCell = cell as? CalendarCell else { return }
     configureCell(cell: calendarCell, cellState: cellState) // Configure the cell properties
   }
-  
+  /**
+   
   /* Next 2 functions set up header */
   func calendar(_ calendar: JTAppleCalendarView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTAppleCollectionReusableView {
     let header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: "header", for: indexPath) as! CalendarHeaderView
@@ -321,7 +324,8 @@ extension YourDayCollectionVC: JTAppleCalendarViewDelegate {
   func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize? {
     return MonthSize(defaultSize: 50)
   }
-  
+   
+  **/
 }
 
 
